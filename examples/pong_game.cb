@@ -1,0 +1,111 @@
+# CINEBREW - Pong Game Example
+# A simple pong-like game written entirely in CineBrew
+
+# Game state
+TAKE ballX = 400;
+TAKE ballY = 300;
+TAKE ballVelX = 4;
+TAKE ballVelY = 3;
+TAKE ballRadius = 10;
+
+TAKE paddleX = 20;
+TAKE paddleY = 250;
+TAKE paddleW = 20;
+TAKE paddleH = 100;
+TAKE score = 0;
+
+# Key constants (SDL2 key codes)
+TAKE KEY_UP = 82;
+TAKE KEY_DOWN = 81;
+
+# Update function - called every frame
+SCENE update() {
+    # Move ball
+    ballX = ballX + ballVelX;
+    ballY = ballY + ballVelY;
+    
+    # Bounce off top and bottom (accounting for ballRadius)
+    IF ballY - ballRadius < 0 {
+        ballY = ballRadius;
+        ballVelY = abs(ballVelY);
+    }
+    IF ballY + ballRadius > getScreenHeight() {
+        ballY = getScreenHeight() - ballRadius;
+        ballVelY = ballVelY * -1;
+    }
+    
+    # Move paddle with arrow keys
+    IF keyPressed(KEY_UP) {
+        paddleY = paddleY - 6;
+    }
+    IF keyPressed(KEY_DOWN) {
+        paddleY = paddleY + 6;
+    }
+    
+    # Keep paddle on screen
+    IF paddleY < 0 {
+        paddleY = 0;
+    }
+    IF paddleY > getScreenHeight() - paddleH {
+        paddleY = getScreenHeight() - paddleH;
+    }
+    
+    # Bounce off right wall (1-player rally mode)
+    IF ballX + ballRadius > getScreenWidth() {
+        ballX = getScreenWidth() - ballRadius;
+        ballVelX = ballVelX * -1;
+    }
+    
+    # Ball hits paddle front face only (prevents back-side tunneling)
+    TAKE paddleRight = paddleX + paddleW;
+    IF ballVelX < 0 {
+        IF ballX - ballRadius <= paddleRight {
+            IF ballX + ballRadius >= paddleX {
+                IF ballY + ballRadius >= paddleY {
+                    IF ballY - ballRadius <= paddleY + paddleH {
+                        ballX = paddleRight + ballRadius;
+                        ballVelX = abs(ballVelX);
+                        score = score + 1;
+                        
+                        # Add deflection angle based on where ball hit paddle
+                        TAKE hitOffset = (ballY - (paddleY + 50)) / 10;
+                        ballVelY = ballVelY + hitOffset;
+                    }
+                }
+            }
+        }
+    }
+    
+    # Ball misses paddle and hits left wall (reset)
+    IF ballX - ballRadius < 0 {
+        ballX = 400;
+        ballY = 300;
+        ballVelX = 4;
+        ballVelY = 3;
+        IF score > 0 {
+            score = score - 1;
+        }
+    }
+    
+    SHOT 0;
+}
+
+# Render function - called every frame
+SCENE render() {
+    # Clear screen
+    clearScreen();
+    
+    # Draw paddle (white)
+    setColor(255, 255, 255);
+    drawRectangle(paddleX, paddleY, paddleW, paddleH);
+    
+    # Draw ball (green)
+    setColor(0, 255, 0);
+    drawCircle(ballX, ballY, ballRadius);
+    
+    # Draw dynamic score bar (grows by 15px per point)
+    setColor(255, 0, 0);
+    drawRectangle(600, 15, score * 15, 20);
+    
+    SHOT 0;
+}

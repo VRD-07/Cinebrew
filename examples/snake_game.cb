@@ -1,0 +1,183 @@
+# CINEBREW - Classic Snake Game
+# Real-time 2D graphical game running on CineBrew VM
+
+# Window / Grid parameters
+TAKE gridSize = 20;
+TAKE speed = 20;
+
+# Snake Head Position
+TAKE headX = 400;
+TAKE headY = 300;
+
+# Snake Direction (0: stopped, 1: UP, 2: RIGHT, 3: DOWN, 4: LEFT)
+TAKE dir = 2;
+
+# Snake Tail Segments (5 segments)
+TAKE s1x = 380;
+TAKE s1y = 300;
+TAKE s2x = 360;
+TAKE s2y = 300;
+TAKE s3x = 340;
+TAKE s3y = 300;
+TAKE s4x = 320;
+TAKE s4y = 300;
+TAKE s5x = 300;
+TAKE s5y = 300;
+
+# Food Position
+TAKE foodX = 500;
+TAKE foodY = 300;
+
+# Score and Game State (1: running, 0: game over)
+TAKE score = 0;
+TAKE isAlive = 1;
+
+# Frame ticker to control snake move speed
+TAKE tick = 0;
+
+# Arrow key constants
+TAKE KEY_LEFT = 80;
+TAKE KEY_UP = 82;
+TAKE KEY_RIGHT = 79;
+TAKE KEY_DOWN = 81;
+TAKE KEY_R = 21;
+
+# Update function - called every frame by VM Game Loop
+SCENE update() {
+    IF isAlive == 0 {
+        # Press R to restart
+        IF keyPressed(KEY_R) {
+            headX = 400;
+            headY = 300;
+            dir = 2;
+            s1x = 380;
+            s1y = 300;
+            s2x = 360;
+            s2y = 300;
+            s3x = 340;
+            s3y = 300;
+            score = 0;
+            isAlive = 1;
+        }
+        SHOT 0;
+    }
+
+    # Handle Input (Change direction)
+    IF keyPressed(KEY_UP) {
+        IF dir != 3 {
+            dir = 1;
+        }
+    }
+    IF keyPressed(KEY_RIGHT) {
+        IF dir != 4 {
+            dir = 2;
+        }
+    }
+    IF keyPressed(KEY_DOWN) {
+        IF dir != 1 {
+            dir = 3;
+        }
+    }
+    IF keyPressed(KEY_LEFT) {
+        IF dir != 2 {
+            dir = 4;
+        }
+    }
+
+    # Throttle movement speed: only move every 5 frames
+    tick = tick + 1;
+    IF tick < 5 {
+        SHOT 0;
+    }
+    tick = 0;
+
+    # Shift tail segments
+    s5x = s4x;
+    s5y = s4y;
+    s4x = s3x;
+    s4y = s3y;
+    s3x = s2x;
+    s3y = s2y;
+    s2x = s1x;
+    s2y = s1y;
+    s1x = headX;
+    s1y = headY;
+
+    # Move Head according to direction
+    IF dir == 1 {
+        headY = headY - speed;
+    }
+    IF dir == 2 {
+        headX = headX + speed;
+    }
+    IF dir == 3 {
+        headY = headY + speed;
+    }
+    IF dir == 4 {
+        headX = headX - speed;
+    }
+
+    # Boundary collisions (wrap around screen)
+    IF headX < 0 {
+        headX = 780;
+    }
+    IF headX >= 800 {
+        headX = 0;
+    }
+    IF headY < 0 {
+        headY = 580;
+    }
+    IF headY >= 600 {
+        headY = 0;
+    }
+
+    # Check Food Collision (within 20px)
+    IF abs(headX - foodX) < 20 {
+        IF abs(headY - foodY) < 20 {
+            score = score + 10;
+            # Spawn new food
+            foodX = (random(35) + 2) * 20;
+            foodY = (random(25) + 2) * 20;
+        }
+    }
+
+    SHOT 0;
+}
+
+# Render function - called every frame by VM Game Loop
+SCENE render() {
+    # 1. Clear background to dark charcoal
+    clearScreen();
+
+    # 2. Draw Food (Red Circle)
+    setColor(235, 64, 52);
+    drawCircle(foodX + 10, foodY + 10, 8);
+
+    # 3. Draw Tail Segments (Darker Green)
+    setColor(46, 204, 113);
+    drawRectangle(s5x, s5y, 18, 18);
+    drawRectangle(s4x, s4y, 18, 18);
+    drawRectangle(s3x, s3y, 18, 18);
+    drawRectangle(s2x, s2y, 18, 18);
+    drawRectangle(s1x, s1y, 18, 18);
+
+    # 4. Draw Snake Head (Bright Emerald Green)
+    setColor(39, 174, 96);
+    drawRectangle(headX, headY, 18, 18);
+
+    # 5. Draw Eyes on Head
+    setColor(255, 255, 255);
+    drawCircle(headX + 5, headY + 5, 3);
+    drawCircle(headX + 13, headY + 5, 3);
+
+    # 6. Draw Score Indicator Bar on Top
+    setColor(52, 73, 94);
+    drawRectangle(10, 10, 120, 24);
+
+    # Mini indicator blocks for score
+    setColor(241, 196, 15);
+    drawRectangle(15, 14, min(score, 110), 16);
+
+    SHOT 0;
+}
+

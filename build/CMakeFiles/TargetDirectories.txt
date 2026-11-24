@@ -1,0 +1,15 @@
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/runtime.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/vm.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/compiler.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_vm_basic.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_vm_factorial.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_lexer.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_parser.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_semantic.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_codegen.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_runtime.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/gui.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/test_gameloop.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/cinebrew.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/edit_cache.dir
+C:/Users/Acer/Desktop/Project/CineBrew-main/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,4 @@
+TAKE a = 25;
+TAKE b = 34;
+
+POUR a+b;
