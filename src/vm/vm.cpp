@@ -160,7 +160,7 @@ void VM::execute(const std::string& instruction, std::vector<std::string>& progr
     }
     
     // Debug: show executing instruction
-    std::cerr << "[DEBUG] PC=" << pc << " EXEC='" << instruction << "'" << std::endl;
+    // std::cerr << "[DEBUG] PC=" << pc << " EXEC='" << instruction << "'" << std::endl;
 
     // Split instruction into parts: "PUSH 42" → ["PUSH", "42"]
     auto parts = split(instruction);
@@ -216,7 +216,7 @@ void VM::execute(const std::string& instruction, std::vector<std::string>& progr
                 auto next_parts = split(program[next_i]);
                 if (!next_parts.empty() && next_parts[0] == "PRINT") {
                     // Debug: show literal contents and length
-                    std::cerr << "[DEBUG] Literal=('" << literal << "') len=" << literal.size() << std::endl;
+                    // std::cerr << "[DEBUG] Literal=('" << literal << "') len=" << literal.size() << std::endl;
                     // Print the literal directly
                     std::cout << literal << std::endl;
                     // Advance pc to after the PRINT

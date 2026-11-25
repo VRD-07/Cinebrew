@@ -1,1126 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineBrew — Compiler Explorer & 2D VM Game Playground</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-base: #0a0e17;
-            --bg-surface: #111827;
-            --bg-card: #1f2937;
-            --bg-card-hover: #283548;
-            --border: #374151;
-            --border-highlight: #4f46e5;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --accent-primary: #6366f1;
-            --accent-hover: #4f46e5;
-            --accent-green: #10b981;
-            --accent-amber: #f59e0b;
-            --accent-red: #ef4444;
-            --code-font: 'Fira Code', monospace;
-            --ui-font: 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineBrew Playground</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --panel: #161922;
+      --border: #282c3c;
+      --accent: #e5a93c; /* Cinematic warm gold */
+      --accent-hover: #f5b94c;
+      --text: #e6edf3;
+      --text-dim: #8b949e;
+      --console-bg: #090b10;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: var(--ui-font);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+    /* Top Bar */
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        /* Top Navigation Bar */
-        header {
-            background-color: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            z-index: 10;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+    }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .brand span {
+      color: var(--accent);
+    }
 
-        .logo-icon {
-            width: 34px;
-            height: 34px;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 18px;
-            color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
-        }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        .brand-text h1 {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    select, button {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
 
-        .badge {
-            background: rgba(99, 102, 241, 0.2);
-            color: #818cf8;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 7px;
-            border-radius: 12px;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
+    select:hover, button:hover {
+      border-color: var(--accent);
+    }
 
-        .brand-text p {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+    .run-btn {
+      background: var(--accent);
+      color: #1a1400;
+      border: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .toolbar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .run-btn:hover {
+      background: var(--accent-hover);
+    }
 
-        select {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-family: inherit;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s;
-        }
+    .run-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-        select:hover {
-            border-color: var(--accent-primary);
-        }
+    /* Main Workspace */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      height: calc(100vh - 57px);
+    }
 
-        .btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
+    .pane {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), #4338ca);
-            color: white;
-            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-        }
+    .pane:last-child {
+      border-right: none;
+    }
 
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #4f46e5, #3730a3);
-            transform: translateY(-1px);
-        }
+    .pane-header {
+      background: var(--panel);
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .btn-secondary {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
+    textarea#editor {
+      flex: 1;
+      background: var(--bg);
+      color: #f0f6fc;
+      border: none;
+      padding: 16px;
+      font-family: "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      white-space: pre;
+    }
 
-        .btn-secondary:hover {
-            background-color: var(--bg-card-hover);
-            border-color: var(--text-muted);
-        }
+    pre#output {
+      flex: 1;
+      background: var(--console-bg);
+      color: #38ef7d;
+      padding: 16px;
+      margin: 0;
+      font-family: "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-        /* Workspace Grid */
-        .workspace {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            flex: 1;
-            overflow: hidden;
-        }
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #232734;
+      color: var(--text-dim);
+    }
 
-        /* Left Pane: Editor */
-        .editor-container {
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--border);
-            background-color: #0d1117;
-            position: relative;
-        }
-
-        .pane-header {
-            background-color: var(--bg-surface);
-            padding: 8px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .pane-header .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: none;
-            font-size: 12px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-green);
-        }
-
-        .status-dot.error {
-            background-color: var(--accent-red);
-        }
-
-        .editor-body {
-            position: relative;
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        .line-numbers {
-            width: 48px;
-            background-color: #0b0f15;
-            color: #4b5563;
-            font-family: var(--code-font);
-            font-size: 13px;
-            line-height: 20px;
-            padding: 14px 8px 14px 0;
-            text-align: right;
-            user-select: none;
-            border-right: 1px solid #1f2937;
-            overflow: hidden;
-        }
-
-        #code-editor {
-            flex: 1;
-            background: transparent;
-            color: #e2e8f0;
-            font-family: var(--code-font);
-            font-size: 13px;
-            line-height: 20px;
-            padding: 14px 16px;
-            border: none;
-            resize: none;
-            outline: none;
-            white-space: pre;
-            overflow: auto;
-            tab-size: 4;
-        }
-
-        /* Right Pane: Multi-tab Display */
-        .output-container {
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-surface);
-            overflow: hidden;
-        }
-
-        .tab-bar {
-            display: flex;
-            background-color: #0f172a;
-            border-bottom: 1px solid var(--border);
-            padding: 0 10px;
-            gap: 4px;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 10px 14px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tab-btn:hover {
-            color: var(--text-main);
-        }
-
-        .tab-btn.active {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
-            background-color: rgba(99, 102, 241, 0.05);
-        }
-
-        .tab-content {
-            flex: 1;
-            display: none;
-            overflow: auto;
-            position: relative;
-        }
-
-        .tab-content.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Canvas Tab */
-        #game-tab {
-            align-items: center;
-            justify-content: center;
-            background-color: #030712;
-            position: relative;
-            padding: 12px;
-        }
-
-        .canvas-wrapper {
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px #1f2937;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            background-color: #000;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            max-width: 680px;
-            height: auto;
-            aspect-ratio: 4 / 3;
-            image-rendering: pixelated;
-        }
-
-        .game-overlay-stats {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-family: var(--code-font);
-            font-size: 11px;
-            color: #38bdf8;
-            display: flex;
-            gap: 12px;
-            pointer-events: none;
-        }
-
-        .controls-hint {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .key-badge {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: var(--code-font);
-            font-size: 11px;
-            color: #f3f4f6;
-        }
-
-        /* Bytecode & Text Tabs */
-        .code-view {
-            padding: 16px;
-            font-family: var(--code-font);
-            font-size: 12px;
-            line-height: 1.6;
-            color: #cbd5e1;
-            white-space: pre-wrap;
-            overflow: auto;
-            flex: 1;
-        }
-
-        .bytecode-line {
-            display: flex;
-            gap: 12px;
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        .bytecode-line:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .pc-index {
-            color: #64748b;
-            width: 32px;
-            text-align: right;
-            user-select: none;
-        }
-
-        .opcode {
-            color: #38bdf8;
-            font-weight: 600;
-        }
-
-        .label-line {
-            color: #f59e0b;
-            font-weight: 700;
-            margin-top: 4px;
-        }
-
-        /* Table view for Tokens */
-        table.token-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: var(--code-font);
-            font-size: 12px;
-        }
-
-        table.token-table th {
-            text-align: left;
-            padding: 8px 12px;
-            background-color: #0b0f17;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-        }
-
-        table.token-table td {
-            padding: 6px 12px;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        table.token-table tr:hover td {
-            background-color: rgba(255, 255, 255, 0.03);
-        }
-
-        .tok-type {
-            color: #ec4899;
-            font-weight: 600;
-        }
-
-        .tok-line {
-            color: #64748b;
-        }
-
-        /* Console Output */
-        .terminal-view {
-            background-color: #090d16;
-            padding: 16px;
-            font-family: var(--code-font);
-            font-size: 12px;
-            line-height: 1.6;
-            color: #a7f3d0;
-            flex: 1;
-            overflow: auto;
-        }
-
-        .console-entry {
-            margin-bottom: 4px;
-        }
-
-        .console-err {
-            color: #f87171;
-        }
-
-        .console-info {
-            color: #94a3b8;
-        }
-
-        /* Responsive Layout */
-        @media (max-width: 900px) {
-            .workspace {
-                grid-template-columns: 1fr;
-                grid-template-rows: 1fr 1fr;
-            }
-            .editor-container {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-        }
-    </style>
+    .status-badge.ready { color: #38ef7d; }
+    .status-badge.running { color: #e5a93c; }
+  </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="brand">
-            <div class="logo-icon">☕</div>
-            <div class="brand-text">
-                <h1>CineBrew Playground <span class="badge">VM & 2D Engine</span></h1>
-                <p>Complete Toolchain: Lexer → AST Parser → Bytecode VM → Canvas 60 FPS</p>
-            </div>
-        </div>
+  <header>
+    <div class="brand">
+      🎬 <span>CineBrew</span> Playground
+    </div>
+    <div class="controls">
+      <select id="presetSelect">
+        <option value="hello">Example: Hello World</option>
+        <option value="factorial">Example: Factorial (Recursion)</option>
+        <option value="loop">Example: Loop Counter</option>
+      </select>
+      <button id="runBtn" class="run-btn" disabled>
+        ▶ Run Code
+      </button>
+    </div>
+  </header>
 
-        <div class="toolbar">
-            <select id="example-select">
-                <option value="snake">🐍 Snake Game (60 FPS)</option>
-                <option value="pong">🏓 Pong Arcade Game</option>
-                <option value="factorial">🔢 Factorial (Recursion)</option>
-                <option value="hello">☕ Hello World & Basic Math</option>
-            </select>
-
-            <button class="btn btn-primary" id="btn-run">
-                <span>▶</span> Run (Ctrl+Enter)
-            </button>
-            <button class="btn btn-secondary" id="btn-pause">
-                <span>⏸</span> Pause
-            </button>
-            <button class="btn btn-secondary" id="btn-reset">
-                <span>🔄</span> Reset
-            </button>
-        </div>
-    </header>
-
-    <!-- Main Workspace -->
-    <div class="workspace">
-        
-        <!-- Left: Code Editor -->
-        <div class="editor-container">
-            <div class="pane-header">
-                <span>CineBrew Source Code (.cb)</span>
-                <div class="status-indicator">
-                    <div class="status-dot" id="status-dot"></div>
-                    <span id="status-text">Ready</span>
-                </div>
-            </div>
-            <div class="editor-body">
-                <div class="line-numbers" id="line-numbers">1</div>
-                <textarea id="code-editor" spellcheck="false" placeholder="Write CineBrew code here..."></textarea>
-            </div>
-        </div>
-
-        <!-- Right: Multi-tab Display -->
-        <div class="output-container">
-            <div class="tab-bar">
-                <button class="tab-btn active" data-tab="game-tab">🎮 2D Game Screen</button>
-                <button class="tab-btn" data-tab="bytecode-tab">⚙️ Bytecode</button>
-                <button class="tab-btn" data-tab="ast-tab">🌳 AST View</button>
-                <button class="tab-btn" data-tab="tokens-tab">🔤 Tokens</button>
-                <button class="tab-btn" data-tab="console-tab">💻 Console Output</button>
-            </div>
-
-            <!-- Tab 1: Game Canvas -->
-            <div class="tab-content active" id="game-tab">
-                <div class="canvas-wrapper">
-                    <canvas id="game-canvas" width="800" height="600"></canvas>
-                    <div class="game-overlay-stats">
-                        <span id="fps-counter">60.0 FPS</span>
-                        <span id="cycle-counter">Cycle: 0</span>
-                    </div>
-                </div>
-                <div class="controls-hint">
-                    <span>Controls:</span>
-                    <span><span class="key-badge">▲</span><span class="key-badge">▼</span><span class="key-badge">◄</span><span class="key-badge">►</span> Move / Aim</span>
-                    <span><span class="key-badge">R</span> Restart Game</span>
-                    <span><span class="key-badge">Space</span> Action</span>
-                </div>
-            </div>
-
-            <!-- Tab 2: Bytecode View -->
-            <div class="tab-content" id="bytecode-tab">
-                <div class="code-view" id="bytecode-output">// Compile to view emitted VM bytecode instructions...</div>
-            </div>
-
-            <!-- Tab 3: AST View -->
-            <div class="tab-content" id="ast-tab">
-                <div class="code-view" id="ast-output">// Parse to view Abstract Syntax Tree JSON representation...</div>
-            </div>
-
-            <!-- Tab 4: Tokens View -->
-            <div class="tab-content" id="tokens-tab">
-                <table class="token-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Type</th>
-                            <th>Lexeme</th>
-                            <th>Line</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tokens-tbody">
-                        <tr><td colspan="4" style="color: #64748b; text-align: center; padding: 24px;">No tokens yet.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Tab 5: Console Tab -->
-            <div class="tab-content" id="console-tab">
-                <div class="terminal-view" id="console-output">
-                    <div class="console-info">[CineBrew Online Compiler & VM Runtime Initialized]</div>
-                </div>
-            </div>
-        </div>
-
+  <div class="workspace">
+    <!-- Editor Pane -->
+    <div class="pane">
+      <div class="pane-header">
+        <span>Source Code (.cb)</span>
+        <span id="compilerStatus" class="status-badge">Loading Wasm VM...</span>
+      </div>
+      <textarea id="editor" spellcheck="false" placeholder="Write CineBrew code here..."></textarea>
     </div>
 
-    <!-- Engine Script -->
-    <script src="engine.js"></script>
+    <!-- Output Pane -->
+    <div class="pane">
+      <div class="pane-header">
+        <span>Terminal Output</span>
+        <span id="execTime" class="status-badge">0 ms</span>
+      </div>
+      <pre id="output">Initializing C++ Virtual Machine...</pre>
+    </div>
+  </div>
 
-    <script>
-        // Preset Programs
-        const PRESETS = {
-            snake: `# CINEBREW - Classic Snake Game
-# Real-time 2D graphical game running on CineBrew VM
+  <!-- Load the Emscripten generated JS wrapper -->
+  <script src="cinebrew.js"></script>
+  <script>
+    // Sample presets
+    const PRESETS = {
+      hello: `# CINEBREW - Hello World\nPOUR "Hello, World!";\n`,
+      factorial: `# CINEBREW - Factorial Example\nSCENE factorial(n) {\n    IF n <= 1 {\n        SHOT 1;\n    }\n    SHOT n * factorial(n - 1);\n}\n\nTAKE n = 5;\nTAKE result = factorial(n);\n\nPOUR "Factorial of ";\nPOUR n;\nPOUR " = ";\nPOUR result;\n`,
+      loop: `# CINEBREW - Loop Example\nTAKE count = 1;\n\nLOOP count <= 5 {\n    POUR "Count is: ";\n    POUR count;\n   count = count + 1;\n}\n\nPOUR "Cut! That's a wrap.";\n`
+    };
 
-# Window / Grid parameters
-TAKE gridSize = 20;
-TAKE speed = 20;
+    let cinebrewModule = null;
+    const runBtn = document.getElementById("runBtn");
+    const editor = document.getElementById("editor");
+    const output = document.getElementById("output");
+    const compilerStatus = document.getElementById("compilerStatus");
+    const execTime = document.getElementById("execTime");
+    const presetSelect = document.getElementById("presetSelect");
 
-# Snake Head Position
-TAKE headX = 400;
-TAKE headY = 300;
+    // Initialize with default preset
+    editor.value = PRESETS.hello;
 
-# Snake Direction (0: stopped, 1: UP, 2: RIGHT, 3: DOWN, 4: LEFT)
-TAKE dir = 2;
+    presetSelect.addEventListener("change", (e) => {
+      if (PRESETS[e.target.value]) {
+        editor.value = PRESETS[e.target.value];
+      }
+    });
 
-# Snake Tail Segments (5 segments)
-TAKE s1x = 380;
-TAKE s1y = 300;
-TAKE s2x = 360;
-TAKE s2y = 300;
-TAKE s3x = 340;
-TAKE s3y = 300;
-TAKE s4x = 320;
-TAKE s4y = 300;
-TAKE s5x = 300;
-TAKE s5y = 300;
+    // Support Tab indentation in textarea
+    editor.addEventListener("keydown", function(e) {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 4;
+      }
+    });
 
-# Food Position
-TAKE foodX = 500;
-TAKE foodY = 300;
+    // Keyboard shortcut: Ctrl+Enter (or Cmd+Enter) to run
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        if (!runBtn.disabled) runCode();
+      }
+    });
 
-# Score and Game State (1: running, 0: game over)
-TAKE score = 0;
-TAKE isAlive = 1;
+    runBtn.addEventListener("click", runCode);
 
-# Frame ticker to control snake move speed
-TAKE tick = 0;
+    function runCode() {
+      if (!cinebrewModule) return;
 
-# Arrow key constants
-TAKE KEY_LEFT = 80;
-TAKE KEY_UP = 82;
-TAKE KEY_RIGHT = 79;
-TAKE KEY_DOWN = 81;
-TAKE KEY_R = 21;
+      compilerStatus.textContent = "Executing...";
+      compilerStatus.className = "status-badge running";
+      output.textContent = "";
 
-# Update function - called every frame by VM Game Loop
-SCENE update() {
-    IF isAlive == 0 {
-        # Press R to restart
-        IF keyPressed(KEY_R) {
-            headX = 400;
-            headY = 300;
-            dir = 2;
-            s1x = 380;
-            s1y = 300;
-            s2x = 360;
-            s2y = 300;
-            s3x = 340;
-            s3y = 300;
-            score = 0;
-            isAlive = 1;
-        }
-        SHOT 0;
+      const code = editor.value;
+      const t0 = performance.now();
+
+      try {
+        // Call our C++ runCineBrew function directly via Embind!
+        const result = cinebrewModule.runCineBrew(code);
+        const t1 = performance.now();
+
+        output.textContent = result || "[Program executed with no output]";
+        execTime.textContent = (t1 - t0).toFixed(2) + " ms";
+      } catch (err) {
+        output.textContent = "Execution Error: " + err;
+      } finally {
+        compilerStatus.textContent = "Ready";
+        compilerStatus.className = "status-badge ready";
+      }
     }
 
-    # Handle Input (Change direction)
-    IF keyPressed(KEY_UP) {
-        IF dir != 3 {
-            dir = 1;
-        }
-    }
-    IF keyPressed(KEY_RIGHT) {
-        IF dir != 4 {
-            dir = 2;
-        }
-    }
-    IF keyPressed(KEY_DOWN) {
-        IF dir != 1 {
-            dir = 3;
-        }
-    }
-    IF keyPressed(KEY_LEFT) {
-        IF dir != 2 {
-            dir = 4;
-        }
+    // Initialize the WebAssembly Module
+    async function init() {
+      try {
+        cinebrewModule = await createCineBrewModule();
+        compilerStatus.textContent = "Ready";
+        compilerStatus.className = "status-badge ready";
+        output.textContent = "CineBrew C++ VM Ready. Click 'Run Code' or press Ctrl+Enter.\n";
+        runBtn.disabled = false;
+      } catch (err) {
+        compilerStatus.textContent = "Failed to load";
+        output.textContent = "Failed to initialize WebAssembly:\n" + err;
+        console.error(err);
+      }
     }
 
-    # Throttle movement speed: only move every 5 frames
-    tick = tick + 1;
-    IF tick < 5 {
-        SHOT 0;
-    }
-    tick = 0;
-
-    # Shift tail segments
-    s5x = s4x;
-    s5y = s4y;
-    s4x = s3x;
-    s4y = s3y;
-    s3x = s2x;
-    s3y = s2y;
-    s2x = s1x;
-    s2y = s1y;
-    s1x = headX;
-    s1y = headY;
-
-    # Move Head according to direction
-    IF dir == 1 {
-        headY = headY - speed;
-    }
-    IF dir == 2 {
-        headX = headX + speed;
-    }
-    IF dir == 3 {
-        headY = headY + speed;
-    }
-    IF dir == 4 {
-        headX = headX - speed;
-    }
-
-    # Boundary collisions (wrap around screen)
-    IF headX < 0 {
-        headX = 780;
-    }
-    IF headX >= 800 {
-        headX = 0;
-    }
-    IF headY < 0 {
-        headY = 580;
-    }
-    IF headY >= 600 {
-        headY = 0;
-    }
-
-    # Check Food Collision (within 20px)
-    IF abs(headX - foodX) < 20 {
-        IF abs(headY - foodY) < 20 {
-            score = score + 10;
-            # Spawn new food
-            foodX = (random(35) + 2) * 20;
-            foodY = (random(25) + 2) * 20;
-        }
-    }
-
-    SHOT 0;
-}
-
-# Render function - called every frame by VM Game Loop
-SCENE render() {
-    # 1. Clear background to dark charcoal
-    clearScreen();
-
-    # 2. Draw Food (Red Circle)
-    setColor(235, 64, 52);
-    drawCircle(foodX + 10, foodY + 10, 8);
-
-    # 3. Draw Tail Segments (Darker Green)
-    setColor(46, 204, 113);
-    drawRectangle(s5x, s5y, 18, 18);
-    drawRectangle(s4x, s4y, 18, 18);
-    drawRectangle(s3x, s3y, 18, 18);
-    drawRectangle(s2x, s2y, 18, 18);
-    drawRectangle(s1x, s1y, 18, 18);
-
-    # 4. Draw Snake Head (Bright Emerald Green)
-    setColor(39, 174, 96);
-    drawRectangle(headX, headY, 18, 18);
-
-    # 5. Draw Eyes on Head
-    setColor(255, 255, 255);
-    drawCircle(headX + 5, headY + 5, 3);
-    drawCircle(headX + 13, headY + 5, 3);
-
-    # 6. Draw Score Indicator Bar on Top
-    setColor(52, 73, 94);
-    drawRectangle(10, 10, 120, 24);
-
-    # Mini indicator blocks for score
-    setColor(241, 196, 15);
-    drawRectangle(15, 14, min(score, 110), 16);
-
-    SHOT 0;
-}`,
-            pong: `# CINEBREW - Pong Game Example
-# A simple pong-like game written entirely in CineBrew
-
-# Game state
-TAKE ballX = 400;
-TAKE ballY = 300;
-TAKE ballVelX = 4;
-TAKE ballVelY = 4;
-TAKE paddleY = 250;
-TAKE score = 0;
-
-# Key constants
-TAKE KEY_UP = 82;
-TAKE KEY_DOWN = 81;
-
-# Update function - called every frame
-SCENE update() {
-    # Move ball
-    ballX = ballX + ballVelX;
-    ballY = ballY + ballVelY;
-    
-    # Bounce off top and bottom
-    IF ballY < 0 {
-        ballVelY = abs(ballVelY);
-    }
-    IF ballY > getScreenHeight() {
-        ballVelY = -abs(ballVelY);
-    }
-    
-    # Move paddle with arrow keys
-    IF keyPressed(KEY_UP) {
-        paddleY = paddleY - 6;
-    }
-    IF keyPressed(KEY_DOWN) {
-        paddleY = paddleY + 6;
-    }
-    
-    # Keep paddle on screen
-    IF paddleY < 0 {
-        paddleY = 0;
-    }
-    IF paddleY > getScreenHeight() - 100 {
-        paddleY = getScreenHeight() - 100;
-    }
-    
-    # Ball hits left wall (reset)
-    IF ballX < 0 {
-        ballX = 400;
-        ballY = 300;
-        ballVelX = 4;
-        ballVelY = 4;
-        score = score - 1;
-    }
-    
-    # Ball hits right wall (score)
-    IF ballX > getScreenWidth() {
-        ballX = 400;
-        ballY = 300;
-        ballVelX = -4;
-        ballVelY = 4;
-        score = score + 1;
-    }
-    
-    # Ball hits paddle (bounce)
-    IF ballX < 50 {
-        IF ballY > paddleY {
-            IF ballY < paddleY + 100 {
-                ballVelX = abs(ballVelX);
-            }
-        }
-    }
-    
-    SHOT 0;
-}
-
-# Render function - called every frame
-SCENE render() {
-    # Clear screen
-    clearScreen();
-    
-    # Draw paddle (white)
-    setColor(255, 255, 255);
-    drawRectangle(20, paddleY, 20, 100);
-    
-    # Draw ball (green)
-    setColor(0, 255, 0);
-    drawCircle(ballX, ballY, 10);
-    
-    # Draw score (red rectangle for now)
-    setColor(255, 0, 0);
-    drawRectangle(700, 10, 50, 30);
-    
-    SHOT 0;
-}`,
-            factorial: `# CINEBREW - Factorial with Recursion
-# Demonstrates function calls, frames, and stack management
-
-SCENE factorial(n) {
-    IF n <= 1 {
-        SHOT 1;
-    }
-    TAKE prev = factorial(n - 1);
-    SHOT n * prev;
-}
-
-TAKE num = 6;
-POUR "Computing factorial for:";
-POUR num;
-
-TAKE result = factorial(num);
-POUR "Factorial result:";
-POUR result;
-`,
-            hello: `# CINEBREW - Hello World & Math
-TAKE a = 25;
-TAKE b = 34;
-TAKE sum = a + b;
-
-POUR "Hello from CineBrew Virtual Machine!";
-POUR "Sum of 25 and 34 is:";
-POUR sum;
-`
-        };
-
-        // DOM Elements
-        const editor = document.getElementById('code-editor');
-        const lineNumbers = document.getElementById('line-numbers');
-        const exampleSelect = document.getElementById('example-select');
-        const btnRun = document.getElementById('btn-run');
-        const btnPause = document.getElementById('btn-pause');
-        const btnReset = document.getElementById('btn-reset');
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
-        const canvas = document.getElementById('game-canvas');
-        const fpsCounter = document.getElementById('fps-counter');
-        const cycleCounter = document.getElementById('cycle-counter');
-        const bytecodeOutput = document.getElementById('bytecode-output');
-        const astOutput = document.getElementById('ast-output');
-        const tokensTbody = document.getElementById('tokens-tbody');
-        const consoleOutput = document.getElementById('console-output');
-
-        // State
-        let vm = null;
-        let compiledBytecode = [];
-        let animationFrameId = null;
-        let isPaused = false;
-        let cycle = 0;
-        let lastFrameTime = performance.now();
-        let frameCount = 0;
-        let fps = 60;
-
-        function logConsole(msg, isError = false) {
-            const line = document.createElement('div');
-            line.className = isError ? 'console-entry console-err' : 'console-entry';
-            line.textContent = String(msg);
-            consoleOutput.appendChild(line);
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
-        }
-
-        function updateLineNumbers() {
-            const lines = editor.value.split('\n').length;
-            let numbers = '';
-            for (let i = 1; i <= lines; i++) {
-                numbers += i + '\n';
-            }
-            lineNumbers.textContent = numbers;
-        }
-
-        editor.addEventListener('input', updateLineNumbers);
-        editor.addEventListener('scroll', () => {
-            lineNumbers.scrollTop = editor.scrollTop;
-        });
-
-        // Tab Switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
-            });
-        });
-
-        // Keyboard Shortcuts
-        editor.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                compileAndRun();
-            }
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = editor.selectionStart;
-                const end = editor.selectionEnd;
-                editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end);
-                editor.selectionStart = editor.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
-        });
-
-        exampleSelect.addEventListener('change', (e) => {
-            const selected = PRESETS[e.target.value];
-            if (selected) {
-                editor.value = selected;
-                updateLineNumbers();
-                compileAndRun();
-            }
-        });
-
-        function compileAndRun() {
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-
-            consoleOutput.innerHTML = '';
-            logConsole('[Compiling CineBrew program...]');
-
-            const source = editor.value;
-
-            // 1. Lexing
-            const lexer = new Lexer(source);
-            const tokens = lexer.tokenize();
-
-            // Populate Tokens table
-            tokensTbody.innerHTML = '';
-            tokens.forEach((t, i) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${i}</td><td class="tok-type">${t.type}</td><td><code>${escapeHtml(t.lexeme)}</code></td><td class="tok-line">${t.line}</td>`;
-                tokensTbody.appendChild(tr);
-            });
-
-            if (lexer.hadError) {
-                statusDot.className = 'status-dot error';
-                statusText.textContent = 'Lex Error';
-                logConsole(`Lexer Error: ${lexer.errorMessage}`, true);
-                return;
-            }
-
-            // 2. Parsing
-            const parser = new Parser(tokens);
-            const ast = parser.parse();
-            astOutput.textContent = JSON.stringify(ast, null, 2);
-
-            if (parser.hadError) {
-                statusDot.className = 'status-dot error';
-                statusText.textContent = 'Parse Error';
-                logConsole(`Parser Error: ${parser.errorMessage}`, true);
-                return;
-            }
-
-            // 3. Code Generation
-            const codegen = new CodeGenerator();
-            compiledBytecode = codegen.generate(ast);
-
-            // Format Bytecode output
-            let bcHtml = '';
-            compiledBytecode.forEach((instr, idx) => {
-                if (instr.endsWith(':')) {
-                    bcHtml += `<div class="bytecode-line label-line"><span class="pc-index">${idx}</span><span>${escapeHtml(instr)}</span></div>`;
-                } else {
-                    const parts = instr.split(' ');
-                    const op = parts[0];
-                    const rest = parts.slice(1).join(' ');
-                    bcHtml += `<div class="bytecode-line"><span class="pc-index">${idx}</span><span class="opcode">${escapeHtml(op)}</span><span>${escapeHtml(rest)}</span></div>`;
-                }
-            });
-            bytecodeOutput.innerHTML = bcHtml;
-
-            statusDot.className = 'status-dot';
-            statusText.textContent = 'Running';
-            logConsole(`Compilation Successful! Produced ${compiledBytecode.length} bytecode instructions.`);
-
-            // 4. Initialize VM
-            vm = new VM(canvas, (msg) => logConsole(msg));
-            vm.preprocess(compiledBytecode);
-
-            // Execute top-level script
-            vm.run(compiledBytecode);
-
-            // Check if game loop (update or render) exists
-            if (vm.labels['update'] !== undefined || vm.labels['render'] !== undefined) {
-                logConsole('Interactive Game Loop detected (SCENE update / SCENE render). Starting 60 FPS loop...');
-                startGameLoop();
-            } else {
-                logConsole('Script execution completed.');
-                statusText.textContent = 'Done';
-            }
-        }
-
-        function startGameLoop() {
-            cycle = 0;
-            isPaused = false;
-            lastFrameTime = performance.now();
-            frameCount = 0;
-
-            function frame(currentTime) {
-                if (!isPaused && vm) {
-                    // Update
-                    vm.callFunction('update', compiledBytecode);
-                    // Render
-                    vm.callFunction('render', compiledBytecode);
-
-                    cycle++;
-                    cycleCounter.textContent = `Cycle: ${cycle}`;
-
-                    // FPS calculation
-                    frameCount++;
-                    if (currentTime - lastFrameTime >= 1000) {
-                        fps = (frameCount * 1000) / (currentTime - lastFrameTime);
-                        fpsCounter.textContent = `${fps.toFixed(1)} FPS`;
-                        frameCount = 0;
-                        lastFrameTime = currentTime;
-                    }
-                }
-                animationFrameId = requestAnimationFrame(frame);
-            }
-
-            animationFrameId = requestAnimationFrame(frame);
-        }
-
-        btnRun.addEventListener('click', compileAndRun);
-
-        btnPause.addEventListener('click', () => {
-            isPaused = !isPaused;
-            btnPause.innerHTML = isPaused ? '<span>▶</span> Resume' : '<span>⏸</span> Pause';
-            statusText.textContent = isPaused ? 'Paused' : 'Running';
-        });
-
-        btnReset.addEventListener('click', () => {
-            compileAndRun();
-        });
-
-        function escapeHtml(text) {
-            return String(text)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-        }
-
-        // Initial Load
-        editor.value = PRESETS.snake;
-        updateLineNumbers();
-        compileAndRun();
-    </script>
+    init();
+  </script>
 </body>
 </html>
-
