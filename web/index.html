@@ -3,293 +3,338 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CineBrew Playground</title>
-  <style>
-    :root {
-      --bg: #0f1117;
-      --panel: #161922;
-      --border: #282c3c;
-      --accent: #e5a93c; /* Cinematic warm gold */
-      --accent-hover: #f5b94c;
-      --text: #e6edf3;
-      --text-dim: #8b949e;
-      --console-bg: #090b10;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* Top Bar */
-    header {
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: 0.5px;
-    }
-
-    .brand span {
-      color: var(--accent);
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    select, button {
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    select:hover, button:hover {
-      border-color: var(--accent);
-    }
-
-    .run-btn {
-      background: var(--accent);
-      color: #1a1400;
-      border: none;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .run-btn:hover {
-      background: var(--accent-hover);
-    }
-
-    .run-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* Main Workspace */
-    .workspace {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      flex: 1;
-      height: calc(100vh - 57px);
-    }
-
-    .pane {
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .pane:last-child {
-      border-right: none;
-    }
-
-    .pane-header {
-      background: var(--panel);
-      padding: 8px 16px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    textarea#editor {
-      flex: 1;
-      background: var(--bg);
-      color: #f0f6fc;
-      border: none;
-      padding: 16px;
-      font-family: "Fira Code", "Cascadia Code", Consolas, monospace;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      resize: none;
-      outline: none;
-      white-space: pre;
-    }
-
-    pre#output {
-      flex: 1;
-      background: var(--console-bg);
-      color: #38ef7d;
-      padding: 16px;
-      margin: 0;
-      font-family: "Fira Code", "Cascadia Code", Consolas, monospace;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .status-badge {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-      background: #232734;
-      color: var(--text-dim);
-    }
-
-    .status-badge.ready { color: #38ef7d; }
-    .status-badge.running { color: #e5a93c; }
-  </style>
+  <title>CineBrew Sandbox</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header>
-    <div class="brand">
-      🎬 <span>CineBrew</span> Playground
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <span class="brand-mark">CB</span>
+        <span>CineBrew</span>
+      </div>
+      <span class="tag">C++17 / WASM VM</span>
+      <div id="vmStatus" class="vm-status">
+        <span class="status-dot"></span>
+        <span id="vmStatusText">Loading VM...</span>
+      </div>
     </div>
-    <div class="controls">
-      <select id="presetSelect">
-        <option value="hello">Example: Hello World</option>
-        <option value="factorial">Example: Factorial (Recursion)</option>
-        <option value="loop">Example: Loop Counter</option>
+
+    <div class="topbar-right">
+      <select id="presetSelect" class="control-select" aria-label="Code Examples">
+        <option value="hello">Preset: Hello World</option>
+        <option value="factorial">Preset: Factorial (Recursion)</option>
+        <option value="loop">Preset: Loop Counter</option>
+        <option value="math">Preset: Built-ins &amp; Math</option>
       </select>
-      <button id="runBtn" class="run-btn" disabled>
-        ▶ Run Code
+      <button id="resetBtn" class="btn" title="Reset editor to selected preset">Reset</button>
+      <button id="runBtn" class="btn btn-run" disabled title="Compile and run (Ctrl+Enter)">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M4 2.5v11l9-5.5-9-5.5z"/>
+        </svg>
+        <span>Run</span>
+        <span class="kbd-hint">Ctrl+Enter</span>
       </button>
     </div>
   </header>
 
-  <div class="workspace">
-    <!-- Editor Pane -->
-    <div class="pane">
-      <div class="pane-header">
-        <span>Source Code (.cb)</span>
-        <span id="compilerStatus" class="status-badge">Loading Wasm VM...</span>
-      </div>
-      <textarea id="editor" spellcheck="false" placeholder="Write CineBrew code here..."></textarea>
-    </div>
+  <!-- 3-Pane Resizable Workspace -->
+  <main class="workspace" id="workspace">
 
-    <!-- Output Pane -->
-    <div class="pane">
+    <!-- LEFT PANE: Full-Height Rulebook & Language Spec -->
+    <section class="pane left-pane" id="leftPane">
       <div class="pane-header">
-        <span>Terminal Output</span>
-        <span id="execTime" class="status-badge">0 ms</span>
+        <div class="tab-group" role="tablist">
+          <button class="tab-btn active" data-doc="rulebook" role="tab">Rulebook</button>
+          <button class="tab-btn" data-doc="quirks" role="tab">Types &amp; Gotchas</button>
+          <button class="tab-btn" data-doc="reference" role="tab">Built-ins &amp; Keys</button>
+        </div>
       </div>
-      <pre id="output">Initializing C++ Virtual Machine...</pre>
-    </div>
-  </div>
 
-  <!-- Load the Emscripten generated JS wrapper -->
+      <div class="docs-body">
+
+        <!-- TAB 1: COMPLETE LANGUAGE RULEBOOK -->
+        <article id="doc-rulebook" class="doc-section active">
+          <h1>CineBrew Language Rulebook</h1>
+          <p>
+            CineBrew is a statically-parsed, stack-VM language compiled directly from C++17 to WebAssembly.
+            Read these exact rules before writing code so you never hit unexpected compiler or VM errors.
+          </p>
+
+          <div class="callout warn">
+            <strong>Core Rule: Variables Hold Integers Only</strong>
+            The VM stack and variable table only store 32-bit integers. String literals (like <code>"Hello"</code>)
+            only work directly inside <code>POUR "...";</code>. You cannot store strings in variables or add strings with <code>+</code>.
+          </div>
+
+          <h2>1. Statements, Semicolons &amp; Comments</h2>
+          <ul>
+            <li>Every statement (<code>TAKE</code>, assignment, <code>POUR</code>, <code>SHOT</code>, standalone call) <strong>must end with a semicolon <code>;</code></strong>.</li>
+            <li>Blocks enclosed in <code>{ ... }</code> do not take a trailing semicolon.</li>
+            <li>Single-line comments start with <code>#</code> and run to the end of the line.</li>
+          </ul>
+
+          <div class="code-sample">
+            <div class="code-sample-head">
+              <span>basic_output.cb</span>
+              <button class="load-snippet-btn" data-snippet="hello">Load in Editor</button>
+            </div>
+            <pre># Single-line comment
+POUR "Hello, World!";
+POUR 42;</pre>
+          </div>
+
+          <h2>2. Variables: <code>TAKE</code> vs Reassignment</h2>
+          <ul>
+            <li><strong>Declare once</strong> using <code>TAKE name = expr;</code>.</li>
+            <li><strong>Reassign</strong> an existing variable <strong>without</strong> <code>TAKE</code>: <code>name = expr;</code>.</li>
+            <li>Using <code>TAKE</code> on a name that was already declared causes a <code>Redeclaration</code> semantic error.</li>
+            <li>Identifiers must start with a letter or underscore (<code>_</code>), followed by letters, digits, or underscores.</li>
+          </ul>
+
+          <div class="code-sample">
+            <div class="code-sample-head">
+              <span>variables.cb</span>
+              <button class="load-snippet-btn" data-snippet="vars">Load in Editor</button>
+            </div>
+            <pre>TAKE score = 10;
+score = score + 5;   # Valid: reassignment omits TAKE
+POUR score;          # Prints 15</pre>
+          </div>
+
+          <h2>3. Control Flow (<code>IF</code>, <code>ELSE</code>, <code>LOOP</code>)</h2>
+          <ul>
+            <li>Parentheses around conditions are optional (<code>IF x &gt; 0 { ... }</code>).</li>
+            <li>There is no <code>ELSE IF</code> keyword; nest an <code>IF</code> inside <code>ELSE { ... }</code> instead.</li>
+            <li><code>LOOP condition { ... }</code> repeats while <code>condition</code> evaluates to non-zero.</li>
+          </ul>
+
+          <div class="code-sample">
+            <div class="code-sample-head">
+              <span>control_flow.cb</span>
+              <button class="load-snippet-btn" data-snippet="loop">Load in Editor</button>
+            </div>
+            <pre>TAKE count = 1;
+LOOP count &lt;= 5 {
+    POUR count;
+    count = count + 1;
+}</pre>
+          </div>
+
+          <h2>4. Functions (<code>SCENE</code> &amp; <code>SHOT</code>)</h2>
+          <ul>
+            <li>Define functions with <code>SCENE name(arg1, arg2) { ... }</code>.</li>
+            <li>Return a value with <code>SHOT expr;</code> (or <code>SHOT;</code> to return <code>0</code>).</li>
+            <li>Functions are hoisted across the whole file: you can call a <code>SCENE</code> before its definition.</li>
+            <li>Parameters are passed on the call stack (read-only). For recursion, always use parameters rather than declaring <code>TAKE</code> variables inside the function body.</li>
+          </ul>
+
+          <div class="code-sample">
+            <div class="code-sample-head">
+              <span>factorial.cb</span>
+              <button class="load-snippet-btn" data-snippet="factorial">Load in Editor</button>
+            </div>
+            <pre>SCENE factorial(n) {
+    IF n &lt;= 1 {
+        SHOT 1;
+    }
+    SHOT n * factorial(n - 1);
+}
+
+TAKE result = factorial(5);
+POUR result;   # Prints 120</pre>
+          </div>
+        </article>
+
+        <!-- TAB 2: TYPES, SCOPING & GOTCHAS -->
+        <article id="doc-quirks" class="doc-section">
+          <h1>Types, Scoping &amp; Compiler Gotchas</h1>
+          <p>
+            Every quirk below comes straight from the CineBrew compiler and VM source code.
+            Knowing these explains why certain valid-looking patterns behave differently.
+          </p>
+
+          <h2>Why <code>TAKE x = "Light"; POUR x + y;</code> Fails</h2>
+          <div class="callout err">
+            <strong>What happens under the hood:</strong>
+            <ol>
+              <li>The VM stack is strictly <code>std::vector&lt;int&gt;</code> and variables are stored in <code>std::unordered_map&lt;std::string, int&gt;</code>.</li>
+              <li><code>POUR "Light";</code> only works because the VM detects a <code>PUSH</code> of a non-integer literal immediately followed by <code>PRINT</code> and prints the raw text directly.</li>
+              <li><code>TAKE x = "Light";</code> emits <code>PUSH Light</code> followed by <code>STORE x</code>. Because <code>STORE</code> is next (not <code>PRINT</code>), the VM calls <code>std::stoi("Light")</code>, fails, prints a warning, and stores <code>0</code>!</li>
+              <li><code>x + y</code> then executes integer <code>ADD</code> on <code>0 + 0</code>, outputting <code>0</code> instead of <code>"Lightcamera"</code>.</li>
+            </ol>
+          </div>
+
+          <h2>Scoping Rules (Flat Global Store)</h2>
+          <ul>
+            <li><strong>Top-level &amp; blocks:</strong> There is <strong>no block scope</strong>. Declaring <code>TAKE i = 0;</code> inside an <code>IF</code> or <code>LOOP</code> registers <code>i</code> in the single global symbol table for the entire file.</li>
+            <li><strong>Functions:</strong> Parameters temporarily shadow globals during semantic checks and read from the call frame (<code>LOADARG</code>) at runtime.</li>
+            <li><strong>Caution in recursion:</strong> A <code>TAKE</code> variable declared inside a <code>SCENE</code> still writes to the global <code>vars</code> map via <code>STORE</code>, so recursive calls share it. Keep recursive state in parameters!</li>
+          </ul>
+
+          <h2>Whitespace Around Minus (<code>-</code>)</h2>
+          <p>
+            In <code>lexer.cpp</code>, a minus sign immediately followed by a digit (like <code>-5</code>) is scanned as a negative <code>NUMBER</code> token.
+          </p>
+          <ul>
+            <li><code>a - 5</code> (with space) parses as <code>a MINUS 5</code>.</li>
+            <li><code>a-5</code> (no space) scans as <code>IDENTIFIER(a)</code> followed by <code>NUMBER(-5)</code>, causing a parse error! Always put spaces around binary operators.</li>
+          </ul>
+
+          <h2>Booleans, Floats &amp; Unfinished Keywords</h2>
+          <ul>
+            <li><strong>Booleans:</strong> Use integers <code>1</code> (true) and <code>0</code> (false). The keywords <code>true</code> and <code>false</code> currently trigger a non-integer warning in the VM and evaluate to <code>0</code>.</li>
+            <li><strong>Unary NOT (<code>!</code>):</strong> Only <code>!=</code> is accepted by the lexer; standalone <code>!x</code> is rejected. Use <code>x == 0</code> instead.</li>
+            <li><strong>Floats:</strong> Only integers are supported. Decimal literals like <code>3.14</code> are rejected by the lexer.</li>
+            <li><strong><code>BREAK;</code> and <code>CONTINUE;</code>:</strong> Accepted by the parser, but currently stubbed in <code>codegen.cpp</code> (they generate a fresh label instead of targeting the enclosing loop). Use condition flags in <code>LOOP</code> instead.</li>
+          </ul>
+        </article>
+
+        <!-- TAB 3: BUILT-INS & SHORTCUTS -->
+        <article id="doc-reference" class="doc-section">
+          <h1>Built-in Functions &amp; Shortcuts</h1>
+          <p>All built-ins return an integer and can be called inside any expression.</p>
+
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Args</th>
+                <th>Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>abs(x)</code></td>
+                <td>1</td>
+                <td>Returns absolute integer value of <code>x</code>.</td>
+              </tr>
+              <tr>
+                <td><code>min(a, b)</code></td>
+                <td>2</td>
+                <td>Returns the smaller of <code>a</code> and <code>b</code>.</td>
+              </tr>
+              <tr>
+                <td><code>max(a, b)</code></td>
+                <td>2</td>
+                <td>Returns the larger of <code>a</code> and <code>b</code>.</td>
+              </tr>
+              <tr>
+                <td><code>random(max)</code></td>
+                <td>1</td>
+                <td>Returns pseudo-random integer in <code>[0, max - 1]</code>.</td>
+              </tr>
+              <tr>
+                <td><code>time()</code></td>
+                <td>0</td>
+                <td>Returns current Unix timestamp in seconds.</td>
+              </tr>
+              <tr>
+                <td><code>print(val)</code></td>
+                <td>1</td>
+                <td>Prints integer <code>val</code> to stdout and returns <code>0</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Editor Shortcuts</h2>
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th>Shortcut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Ctrl + Enter</code> / <code>Cmd + Enter</code></td>
+                <td>Compile and run current code in the WASM VM</td>
+              </tr>
+              <tr>
+                <td><code>Ctrl + /</code> / <code>Cmd + /</code></td>
+                <td>Toggle <code>#</code> comment on current or selected lines</td>
+              </tr>
+              <tr>
+                <td><code>Tab</code></td>
+                <td>Insert 4 spaces</td>
+              </tr>
+              <tr>
+                <td><code>Ctrl + L</code></td>
+                <td>Clear terminal output</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Terminal Commands</h2>
+          <p>Click inside the bottom terminal prompt and type commands directly:</p>
+          <ul>
+            <li><code>run</code> — Compile and execute the code currently in the editor.</li>
+            <li><code>clear</code> — Clear terminal scrollback.</li>
+            <li><code>cat</code> — Print current editor source in the terminal.</li>
+            <li><code>help</code> — Show available terminal commands.</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- HORIZONTAL RESIZER -->
+    <div class="resizer-x" id="resizerX" title="Drag to resize panels"></div>
+
+    <!-- RIGHT COLUMN: Code Editor (Top) + Terminal (Bottom) -->
+    <section class="right-column" id="rightColumn">
+
+      <!-- TOP-RIGHT PANE: CodeJar Editor -->
+      <div class="pane editor-pane" id="editorPane">
+        <div class="pane-header">
+          <div class="pane-title">
+            <span>main.cb</span>
+          </div>
+          <div class="pane-meta">
+            <span>Ctrl+/ Comment</span>
+            <span>Tab Indent</span>
+          </div>
+        </div>
+
+        <div class="editor-shell" id="editorShell">
+          <div class="line-numbers" id="lineNumbers" aria-hidden="true">1</div>
+          <div class="code-editor" id="codeEditor" spellcheck="false" ></div>
+        </div>
+      </div>
+
+      <!-- VERTICAL RESIZER -->
+      <div class="resizer-y" id="resizerY" title="Drag to resize editor and terminal"></div>
+
+      <!-- BOTTOM-RIGHT PANE: Real Terminal -->
+      <div class="pane terminal-pane" id="terminalPane">
+        <div class="pane-header">
+          <div class="pane-title">
+            <span>Terminal</span>
+            <span id="exitBadge" class="badge-exit">idle</span>
+          </div>
+          <div class="pane-meta">
+            <span id="execTime">0.00 ms</span>
+            <button id="clearTermBtn" class="btn-ghost">Clear</button>
+          </div>
+        </div>
+
+        <div class="terminal-shell" id="terminalShell">
+          <div class="term-history" id="termHistory"></div>
+          <div class="term-input-row">
+            <span class="term-prompt"><span class="term-user">guest@cinebrew</span><span class="term-sep">:</span><span class="term-path">~/sandbox</span><span class="term-sep">$ </span></span>
+            <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" aria-label="Terminal command input">
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Emscripten Generated Wasm Module -->
   <script src="cinebrew.js"></script>
-  <script>
-    // Sample presets
-    const PRESETS = {
-      hello: `# CINEBREW - Hello World\nPOUR "Hello, World!";\n`,
-      factorial: `# CINEBREW - Factorial Example\nSCENE factorial(n) {\n    IF n <= 1 {\n        SHOT 1;\n    }\n    SHOT n * factorial(n - 1);\n}\n\nTAKE n = 5;\nTAKE result = factorial(n);\n\nPOUR "Factorial of ";\nPOUR n;\nPOUR " = ";\nPOUR result;\n`,
-      loop: `# CINEBREW - Loop Example\nTAKE count = 1;\n\nLOOP count <= 5 {\n    POUR "Count is: ";\n    POUR count;\n   count = count + 1;\n}\n\nPOUR "Cut! That's a wrap.";\n`
-    };
-
-    let cinebrewModule = null;
-    const runBtn = document.getElementById("runBtn");
-    const editor = document.getElementById("editor");
-    const output = document.getElementById("output");
-    const compilerStatus = document.getElementById("compilerStatus");
-    const execTime = document.getElementById("execTime");
-    const presetSelect = document.getElementById("presetSelect");
-
-    // Initialize with default preset
-    editor.value = PRESETS.hello;
-
-    presetSelect.addEventListener("change", (e) => {
-      if (PRESETS[e.target.value]) {
-        editor.value = PRESETS[e.target.value];
-      }
-    });
-
-    // Support Tab indentation in textarea
-    editor.addEventListener("keydown", function(e) {
-      if (e.key === "Tab") {
-        e.preventDefault();
-        const start = this.selectionStart;
-        const end = this.selectionEnd;
-        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-        this.selectionStart = this.selectionEnd = start + 4;
-      }
-    });
-
-    // Keyboard shortcut: Ctrl+Enter (or Cmd+Enter) to run
-    window.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-        if (!runBtn.disabled) runCode();
-      }
-    });
-
-    runBtn.addEventListener("click", runCode);
-
-    function runCode() {
-      if (!cinebrewModule) return;
-
-      compilerStatus.textContent = "Executing...";
-      compilerStatus.className = "status-badge running";
-      output.textContent = "";
-
-      const code = editor.value;
-      const t0 = performance.now();
-
-      try {
-        // Call our C++ runCineBrew function directly via Embind!
-        const result = cinebrewModule.runCineBrew(code);
-        const t1 = performance.now();
-
-        output.textContent = result || "[Program executed with no output]";
-        execTime.textContent = (t1 - t0).toFixed(2) + " ms";
-      } catch (err) {
-        output.textContent = "Execution Error: " + err;
-      } finally {
-        compilerStatus.textContent = "Ready";
-        compilerStatus.className = "status-badge ready";
-      }
-    }
-
-    // Initialize the WebAssembly Module
-    async function init() {
-      try {
-        cinebrewModule = await createCineBrewModule();
-        compilerStatus.textContent = "Ready";
-        compilerStatus.className = "status-badge ready";
-        output.textContent = "CineBrew C++ VM Ready. Click 'Run Code' or press Ctrl+Enter.\n";
-        runBtn.disabled = false;
-      } catch (err) {
-        compilerStatus.textContent = "Failed to load";
-        output.textContent = "Failed to initialize WebAssembly:\n" + err;
-        console.error(err);
-      }
-    }
-
-    init();
-  </script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
