@@ -1,16 +1,10 @@
-// Minimal CLI entrypoint for CineBrew
-// Usage:
-//   cinebrew run <file>
-//   cinebrew <file>
-
 #include "compiler.h"
 #include "../vm/vm.h"
+#include "../gui/game_loop.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-
-#include "../gui/game_loop.h"
 
 static void printUsage() {
     std::cerr << "Usage:\n  cinebrew run <file>\n  cinebrew <file>\n";
@@ -59,10 +53,8 @@ int main(int argc, char* argv[]) {
             vm.preprocess(bytecode);
 
             if (vm.labels.find("update") != vm.labels.end() || vm.labels.find("render") != vm.labels.end()) {
-                // Initialize global variables and state
                 vm.run(bytecode);
 
-                // Launch 2D graphical game loop
                 GameLoop gameLoop(vm, bytecode, 800, 600, "CineBrew Game");
                 gameLoop.setTargetFPS(60);
                 gameLoop.run();
@@ -80,4 +72,3 @@ int main(int argc, char* argv[]) {
     printUsage();
     return 1;
 }
-

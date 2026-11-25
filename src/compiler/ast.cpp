@@ -1,14 +1,5 @@
-/**
- * AST Implementation
- * String representations for debugging
- */
-
 #include "ast.h"
 #include <sstream>
-
-// ============================================================================
-// EXPRESSION TO STRING
-// ============================================================================
 
 std::string LiteralExpr::toString() const {
     return value;
@@ -36,10 +27,6 @@ std::string CallExpr::toString() const {
     return result;
 }
 
-// ============================================================================
-// STATEMENT TO STRING
-// ============================================================================
-
 std::string DeclarationStmt::toString() const {
     std::string result = keyword.lexeme + " " + name.lexeme + " = ";
     if (initializer) {
@@ -65,7 +52,7 @@ std::string IfStmt::toString() const {
     std::string result = keyword.lexeme + " " + condition->toString() + " ";
     result += thenBranch->toString();
     if (elseBranch) {
-        result += " " + keyword.lexeme + " { ... }";  // Simplified
+        result += " ELSE { ... }";
     }
     return result;
 }
@@ -110,10 +97,6 @@ std::string FunctionStmt::toString() const {
     return result;
 }
 
-// ============================================================================
-// PROGRAM TO STRING
-// ============================================================================
-
 std::string Program::toString() const {
     std::string result = "Program:\n";
     for (const auto& stmt : statements) {
@@ -121,4 +104,3 @@ std::string Program::toString() const {
     }
     return result;
 }
-

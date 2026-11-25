@@ -139,13 +139,13 @@ CMakeFiles/cinebrew.dir/src/compiler/cinebrew_main.cpp.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\istream \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\istream.tcc \
  c:\users\acer\desktop\project\cinebrew-main\src\runtime\runtime.h \
+ c:\users\acer\desktop\project\cinebrew-main\src\gui\game_loop.h \
+ c:\users\acer\desktop\project\cinebrew-main\src\vm\vm.h \
+ c:\users\acer\desktop\project\cinebrew-main\src\gui\window.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\fstream \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\codecvt.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\mingw32\bits\basic_file.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\mingw32\bits\c++io.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\fstream.tcc \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\sstream \
- c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\sstream.tcc \
- c:\users\acer\desktop\project\cinebrew-main\src\gui\game_loop.h \
- c:\users\acer\desktop\project\cinebrew-main\src\vm\vm.h \
- c:\users\acer\desktop\project\cinebrew-main\src\gui\window.h
+ c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\sstream.tcc

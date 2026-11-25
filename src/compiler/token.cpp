@@ -1,8 +1,3 @@
-/**
- * Token Implementation
- * Helper functions for tokens
- */
-
 #include "token.h"
 #include <unordered_map>
 
@@ -42,11 +37,10 @@ std::string tokenTypeToString(TokenType type) {
         {TokenType::END_OF_FILE, "END_OF_FILE"},
         {TokenType::ERROR, "ERROR"}
     };
-    
+
     auto it = typeNames.find(type);
     if (it != typeNames.end()) {
         return it->second;
     }
     return "UNKNOWN";
 }
-

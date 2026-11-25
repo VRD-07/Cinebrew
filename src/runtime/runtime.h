@@ -1,8 +1,3 @@
-/**
- * CINEBREW Runtime Library - Header
- * Built-in functions: I/O, math, timing, and graphics stubs.
- */
-
 #ifndef RUNTIME_H
 #define RUNTIME_H
 
@@ -11,10 +6,8 @@
 #include <functional>
 #include <unordered_map>
 
-// Forward declaration of Window (defined in gui)
 class Window;
 
-// Represents a built-in runtime function
 struct RuntimeFunction {
     std::string name;
     int paramCount;
@@ -34,7 +27,6 @@ public:
     int getParamCount(const std::string& name) const;
     int call(const std::string& name, std::vector<int>& args);
 
-    // Set a Window reference for graphics-related builtins
     static void setWindow(Window* window);
 
 private:
@@ -42,7 +34,6 @@ private:
 
     void initializeBuiltins();
 
-    // Built-in implementations
     static int printImpl(std::vector<int>& args);
     static int inputImpl(std::vector<int>& args);
     static int randomImpl(std::vector<int>& args);
@@ -64,5 +55,4 @@ private:
     static Window* window_;
 };
 
-#endif // RUNTIME_H
-
+#endif

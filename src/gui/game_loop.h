@@ -1,10 +1,3 @@
-/**
-
-/**
- * CINEBREW Game Loop - Header
- * Update/render cycle with frame timing control.
- */
-
 #ifndef GAME_LOOP_H
 #define GAME_LOOP_H
 
@@ -38,7 +31,4 @@ private:
     long long getCurrentTimeMs();
 };
 
-#endif // GAME_LOOP_H
-    
-
-    // Call a CineBrew function by name
+#endif

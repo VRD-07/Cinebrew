@@ -1,7 +1,3 @@
-// ============================================================================
-// CineBrew Sandbox Application Logic
-// ============================================================================
-
 const PRESETS = {
   hello: `# CineBrew - Hello World
 POUR "Hello, World!";
@@ -52,10 +48,6 @@ POUR score;
 `
 };
 
-// ============================================================================
-// DOM References
-// ============================================================================
-
 const vmStatus = document.getElementById("vmStatus");
 const vmStatusText = document.getElementById("vmStatusText");
 const presetSelect = document.getElementById("presetSelect");
@@ -85,10 +77,6 @@ let jar = null;
 let currentPreset = "hello";
 const cmdHistory = [];
 let cmdHistoryIdx = -1;
-
-// ============================================================================
-// Syntax Highlighter (Single-Pass Regex — Mirrors CineBrew Lexer)
-// ============================================================================
 
 function escapeHtml(str) {
   return str
@@ -153,10 +141,6 @@ function setCode(code) {
   }
   updateLineNumbers(code);
 }
-
-// ============================================================================
-// Initialize CodeJar + Caret Auto-Scroll + Instant Line Numbers
-// ============================================================================
 
 function getCaretOffset() {
   const sel = window.getSelection();
@@ -314,10 +298,6 @@ function toggleLineComment() {
   }
 }
 
-// ============================================================================
-// Left-Pane Documentation Tabs & Snippet Loaders
-// ============================================================================
-
 document.querySelectorAll(".tab-btn[data-doc]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.dataset.doc;
@@ -342,12 +322,7 @@ document.querySelectorAll(".load-snippet-btn").forEach((btn) => {
   });
 });
 
-// ============================================================================
-// Resizable Split Panes
-// ============================================================================
-
 function setupResizers() {
-  // Horizontal splitter (left pane vs right column)
   resizerX.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     resizerX.classList.add("active");
@@ -373,7 +348,6 @@ function setupResizers() {
     resizerX.addEventListener("pointerup", onUp);
   });
 
-  // Vertical splitter (editor pane vs terminal pane)
   resizerY.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     resizerY.classList.add("active");
@@ -399,10 +373,6 @@ function setupResizers() {
     resizerY.addEventListener("pointerup", onUp);
   });
 }
-
-// ============================================================================
-// Terminal Output & Interactive Shell
-// ============================================================================
 
 function appendTermPromptLine(command) {
   const div = document.createElement("div");
@@ -538,10 +508,6 @@ function handleTerminalCommand(raw) {
   scrollTerminalToBottom();
 }
 
-// ============================================================================
-// Event Listeners & Shortcuts
-// ============================================================================
-
 presetSelect.addEventListener("change", (e) => {
   currentPreset = e.target.value;
   if (PRESETS[currentPreset]) {
@@ -603,10 +569,6 @@ window.addEventListener("keydown", (e) => {
     clearTerminal();
   }
 });
-
-// ============================================================================
-// Boot Sequence
-// ============================================================================
 
 async function boot() {
   setupResizers();

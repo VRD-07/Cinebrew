@@ -1,9 +1,3 @@
-/**
- * Window Implementation - Win32 GDI Backend
- *
- * Provides native 2D graphical window rendering and keyboard input on Windows
- * without requiring external dependencies like SDL2.
- */
 #include "window.h"
 #include <iostream>
 #include <cstring>
@@ -23,23 +17,23 @@ struct Win32RenderContext {
 
 static int mapVkToScanCode(WPARAM vk) {
     switch (vk) {
-        case VK_LEFT:   return KEY_LEFT;     // 80
-        case VK_UP:     return KEY_UP;       // 82
-        case VK_RIGHT:  return KEY_RIGHT;    // 79
-        case VK_DOWN:   return KEY_DOWN;     // 81
-        case VK_SPACE:  return KEY_SPACE;    // 44
-        case VK_RETURN: return KEY_RETURN;   // 40
-        case VK_ESCAPE: return KEY_ESCAPE;   // 41
-        case VK_TAB:    return KEY_TAB;      // 43
-        case VK_BACK:   return KEY_BACKSPACE;// 42
+        case VK_LEFT:   return KEY_LEFT;
+        case VK_UP:     return KEY_UP;
+        case VK_RIGHT:  return KEY_RIGHT;
+        case VK_DOWN:   return KEY_DOWN;
+        case VK_SPACE:  return KEY_SPACE;
+        case VK_RETURN: return KEY_RETURN;
+        case VK_ESCAPE: return KEY_ESCAPE;
+        case VK_TAB:    return KEY_TAB;
+        case VK_BACK:   return KEY_BACKSPACE;
         default:
             if (vk >= 'A' && vk <= 'Z') {
-                return KEY_A + (vk - 'A');   // 4..29
+                return KEY_A + (vk - 'A');
             }
             if (vk >= '1' && vk <= '9') {
-                return KEY_1 + (vk - '1');   // 30..38
+                return KEY_1 + (vk - '1');
             }
-            if (vk == '0') return KEY_0;      // 39
+            if (vk == '0') return KEY_0;
             return 0;
     }
 }
@@ -78,7 +72,7 @@ bool Window::initialize() {
     wc.lpszClassName = WINDOW_CLASS_NAME;
     wc.hCursor = LoadCursorA(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    
+
     RegisterClassA(&wc);
 #endif
     return true;

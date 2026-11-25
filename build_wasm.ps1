@@ -1,6 +1,5 @@
-# Ensure output directory exists
 if (!(Test-Path "web")) {
-    New-Item -ItemType Directory -Path "web"
+    New-Item -ItemType Directory -Path "web" | Out-Null
 }
 
 Write-Host "Compiling CineBrew to WebAssembly..." -ForegroundColor Cyan
@@ -25,9 +24,7 @@ em++ -std=c++17 -O3 -fexceptions --bind `
     -o web/cinebrew.js
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "Build Succeeded!" -ForegroundColor Green
-    Write-Host "Generated: web/cinebrew.js and web/cinebrew.wasm" -ForegroundColor Green
-}
-else {
+    Write-Host "Build Succeeded: web/cinebrew.js, web/cinebrew.wasm" -ForegroundColor Green
+} else {
     Write-Host "Build Failed with exit code $LASTEXITCODE" -ForegroundColor Red
 }

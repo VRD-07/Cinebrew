@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CineBrew Sandbox</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
+
 <body>
 
-  <!-- Top Bar -->
   <header class="topbar">
     <div class="topbar-left">
       <div class="brand">
@@ -32,7 +37,7 @@
       <button id="resetBtn" class="btn" title="Reset editor to selected preset">Reset</button>
       <button id="runBtn" class="btn btn-run" disabled title="Compile and run (Ctrl+Enter)">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-          <path d="M4 2.5v11l9-5.5-9-5.5z"/>
+          <path d="M4 2.5v11l9-5.5-9-5.5z" />
         </svg>
         <span>Run</span>
         <span class="kbd-hint">Ctrl+Enter</span>
@@ -40,10 +45,8 @@
     </div>
   </header>
 
-  <!-- 3-Pane Resizable Workspace -->
   <main class="workspace" id="workspace">
 
-    <!-- LEFT PANE: Full-Height Rulebook & Language Spec -->
     <section class="pane left-pane" id="leftPane">
       <div class="pane-header">
         <div class="tab-group" role="tablist">
@@ -55,7 +58,6 @@
 
       <div class="docs-body">
 
-        <!-- TAB 1: COMPLETE LANGUAGE RULEBOOK -->
         <article id="doc-rulebook" class="doc-section active">
           <h1>CineBrew Language Rulebook</h1>
           <p>
@@ -66,12 +68,15 @@
           <div class="callout warn">
             <strong>Core Rule: Variables Hold Integers Only</strong>
             The VM stack and variable table only store 32-bit integers. String literals (like <code>"Hello"</code>)
-            only work directly inside <code>POUR "...";</code>. You cannot store strings in variables or add strings with <code>+</code>.
+            only work directly inside <code>POUR "...";</code>. You cannot store strings in variables or add strings
+            with <code>+</code>.
           </div>
 
           <h2>1. Statements, Semicolons &amp; Comments</h2>
           <ul>
-            <li>Every statement (<code>TAKE</code>, assignment, <code>POUR</code>, <code>SHOT</code>, standalone call) <strong>must end with a semicolon <code>;</code></strong>.</li>
+            <li>Every statement (<code>TAKE</code>, assignment, <code>POUR</code>, <code>SHOT</code>, standalone call)
+              <strong>must end with a semicolon <code>;</code></strong>.
+            </li>
             <li>Blocks enclosed in <code>{ ... }</code> do not take a trailing semicolon.</li>
             <li>Single-line comments start with <code>#</code> and run to the end of the line.</li>
           </ul>
@@ -89,9 +94,13 @@ POUR 42;</pre>
           <h2>2. Variables: <code>TAKE</code> vs Reassignment</h2>
           <ul>
             <li><strong>Declare once</strong> using <code>TAKE name = expr;</code>.</li>
-            <li><strong>Reassign</strong> an existing variable <strong>without</strong> <code>TAKE</code>: <code>name = expr;</code>.</li>
-            <li>Using <code>TAKE</code> on a name that was already declared causes a <code>Redeclaration</code> semantic error.</li>
-            <li>Identifiers must start with a letter or underscore (<code>_</code>), followed by letters, digits, or underscores.</li>
+            <li><strong>Reassign</strong> an existing variable <strong>without</strong> <code>TAKE</code>:
+              <code>name = expr;</code>.
+            </li>
+            <li>Using <code>TAKE</code> on a name that was already declared causes a <code>Redeclaration</code> semantic
+              error.</li>
+            <li>Identifiers must start with a letter or underscore (<code>_</code>), followed by letters, digits, or
+              underscores.</li>
           </ul>
 
           <div class="code-sample">
@@ -107,7 +116,8 @@ POUR score;          # Prints 15</pre>
           <h2>3. Control Flow (<code>IF</code>, <code>ELSE</code>, <code>LOOP</code>)</h2>
           <ul>
             <li>Parentheses around conditions are optional (<code>IF x &gt; 0 { ... }</code>).</li>
-            <li>There is no <code>ELSE IF</code> keyword; nest an <code>IF</code> inside <code>ELSE { ... }</code> instead.</li>
+            <li>There is no <code>ELSE IF</code> keyword; nest an <code>IF</code> inside <code>ELSE { ... }</code>
+              instead.</li>
             <li><code>LOOP condition { ... }</code> repeats while <code>condition</code> evaluates to non-zero.</li>
           </ul>
 
@@ -127,8 +137,10 @@ LOOP count &lt;= 5 {
           <ul>
             <li>Define functions with <code>SCENE name(arg1, arg2) { ... }</code>.</li>
             <li>Return a value with <code>SHOT expr;</code> (or <code>SHOT;</code> to return <code>0</code>).</li>
-            <li>Functions are hoisted across the whole file: you can call a <code>SCENE</code> before its definition.</li>
-            <li>Parameters are passed on the call stack (read-only). For recursion, always use parameters rather than declaring <code>TAKE</code> variables inside the function body.</li>
+            <li>Functions are hoisted across the whole file: you can call a <code>SCENE</code> before its definition.
+            </li>
+            <li>Parameters are passed on the call stack (read-only). For recursion, always use parameters rather than
+              declaring <code>TAKE</code> variables inside the function body.</li>
           </ul>
 
           <div class="code-sample">
@@ -148,7 +160,6 @@ POUR result;   # Prints 120</pre>
           </div>
         </article>
 
-        <!-- TAB 2: TYPES, SCOPING & GOTCHAS -->
         <article id="doc-quirks" class="doc-section">
           <h1>Types, Scoping &amp; Compiler Gotchas</h1>
           <p>
@@ -160,39 +171,62 @@ POUR result;   # Prints 120</pre>
           <div class="callout err">
             <strong>What happens under the hood:</strong>
             <ol>
-              <li>The VM stack is strictly <code>std::vector&lt;int&gt;</code> and variables are stored in <code>std::unordered_map&lt;std::string, int&gt;</code>.</li>
-              <li><code>POUR "Light";</code> only works because the VM detects a <code>PUSH</code> of a non-integer literal immediately followed by <code>PRINT</code> and prints the raw text directly.</li>
-              <li><code>TAKE x = "Light";</code> emits <code>PUSH Light</code> followed by <code>STORE x</code>. Because <code>STORE</code> is next (not <code>PRINT</code>), the VM calls <code>std::stoi("Light")</code>, fails, prints a warning, and stores <code>0</code>!</li>
-              <li><code>x + y</code> then executes integer <code>ADD</code> on <code>0 + 0</code>, outputting <code>0</code> instead of <code>"Lightcamera"</code>.</li>
+              <li>The VM stack is strictly <code>std::vector&lt;int&gt;</code> and variables are stored in
+                <code>std::unordered_map&lt;std::string, int&gt;</code>.
+              </li>
+              <li><code>POUR "Light";</code> only works because the VM detects a <code>PUSH</code> of a non-integer
+                literal immediately followed by <code>PRINT</code> and prints the raw text directly.</li>
+              <li><code>TAKE x = "Light";</code> emits <code>PUSH Light</code> followed by <code>STORE x</code>. Because
+                <code>STORE</code> is next (not <code>PRINT</code>), the VM calls <code>std::stoi("Light")</code>,
+                fails, prints a warning, and stores <code>0</code>!
+              </li>
+              <li><code>x + y</code> then executes integer <code>ADD</code> on <code>0 + 0</code>, outputting
+                <code>0</code> instead of <code>"Lightcamera"</code>.
+              </li>
             </ol>
           </div>
 
           <h2>Scoping Rules (Flat Global Store)</h2>
           <ul>
-            <li><strong>Top-level &amp; blocks:</strong> There is <strong>no block scope</strong>. Declaring <code>TAKE i = 0;</code> inside an <code>IF</code> or <code>LOOP</code> registers <code>i</code> in the single global symbol table for the entire file.</li>
-            <li><strong>Functions:</strong> Parameters temporarily shadow globals during semantic checks and read from the call frame (<code>LOADARG</code>) at runtime.</li>
-            <li><strong>Caution in recursion:</strong> A <code>TAKE</code> variable declared inside a <code>SCENE</code> still writes to the global <code>vars</code> map via <code>STORE</code>, so recursive calls share it. Keep recursive state in parameters!</li>
+            <li><strong>Top-level &amp; blocks:</strong> There is <strong>no block scope</strong>. Declaring
+              <code>TAKE i = 0;</code> inside an <code>IF</code> or <code>LOOP</code> registers <code>i</code> in the
+              single global symbol table for the entire file.
+            </li>
+            <li><strong>Functions:</strong> Parameters temporarily shadow globals during semantic checks and read from
+              the call frame (<code>LOADARG</code>) at runtime.</li>
+            <li><strong>Caution in recursion:</strong> A <code>TAKE</code> variable declared inside a <code>SCENE</code>
+              still writes to the global <code>vars</code> map via <code>STORE</code>, so recursive calls share it. Keep
+              recursive state in parameters!</li>
           </ul>
 
           <h2>Whitespace Around Minus (<code>-</code>)</h2>
           <p>
-            In <code>lexer.cpp</code>, a minus sign immediately followed by a digit (like <code>-5</code>) is scanned as a negative <code>NUMBER</code> token.
+            In <code>lexer.cpp</code>, a minus sign immediately followed by a digit (like <code>-5</code>) is scanned as
+            a negative <code>NUMBER</code> token.
           </p>
           <ul>
             <li><code>a - 5</code> (with space) parses as <code>a MINUS 5</code>.</li>
-            <li><code>a-5</code> (no space) scans as <code>IDENTIFIER(a)</code> followed by <code>NUMBER(-5)</code>, causing a parse error! Always put spaces around binary operators.</li>
+            <li><code>a-5</code> (no space) scans as <code>IDENTIFIER(a)</code> followed by <code>NUMBER(-5)</code>,
+              causing a parse error! Always put spaces around binary operators.</li>
           </ul>
 
           <h2>Booleans, Floats &amp; Unfinished Keywords</h2>
           <ul>
-            <li><strong>Booleans:</strong> Use integers <code>1</code> (true) and <code>0</code> (false). The keywords <code>true</code> and <code>false</code> currently trigger a non-integer warning in the VM and evaluate to <code>0</code>.</li>
-            <li><strong>Unary NOT (<code>!</code>):</strong> Only <code>!=</code> is accepted by the lexer; standalone <code>!x</code> is rejected. Use <code>x == 0</code> instead.</li>
-            <li><strong>Floats:</strong> Only integers are supported. Decimal literals like <code>3.14</code> are rejected by the lexer.</li>
-            <li><strong><code>BREAK;</code> and <code>CONTINUE;</code>:</strong> Accepted by the parser, but currently stubbed in <code>codegen.cpp</code> (they generate a fresh label instead of targeting the enclosing loop). Use condition flags in <code>LOOP</code> instead.</li>
+            <li><strong>Booleans:</strong> Use integers <code>1</code> (true) and <code>0</code> (false). The keywords
+              <code>true</code> and <code>false</code> currently trigger a non-integer warning in the VM and evaluate to
+              <code>0</code>.
+            </li>
+            <li><strong>Unary NOT (<code>!</code>):</strong> Only <code>!=</code> is accepted by the lexer; standalone
+              <code>!x</code> is rejected. Use <code>x == 0</code> instead.
+            </li>
+            <li><strong>Floats:</strong> Only integers are supported. Decimal literals like <code>3.14</code> are
+              rejected by the lexer.</li>
+            <li><strong><code>BREAK;</code> and <code>CONTINUE;</code>:</strong> Accepted by the parser, but currently
+              stubbed in <code>codegen.cpp</code> (they generate a fresh label instead of targeting the enclosing loop).
+              Use condition flags in <code>LOOP</code> instead.</li>
           </ul>
         </article>
 
-        <!-- TAB 3: BUILT-INS & SHORTCUTS -->
         <article id="doc-reference" class="doc-section">
           <h1>Built-in Functions &amp; Shortcuts</h1>
           <p>All built-ins return an integer and can be called inside any expression.</p>
@@ -280,13 +314,10 @@ POUR result;   # Prints 120</pre>
       </div>
     </section>
 
-    <!-- HORIZONTAL RESIZER -->
     <div class="resizer-x" id="resizerX" title="Drag to resize panels"></div>
 
-    <!-- RIGHT COLUMN: Code Editor (Top) + Terminal (Bottom) -->
     <section class="right-column" id="rightColumn">
 
-      <!-- TOP-RIGHT PANE: CodeJar Editor -->
       <div class="pane editor-pane" id="editorPane">
         <div class="pane-header">
           <div class="pane-title">
@@ -300,14 +331,12 @@ POUR result;   # Prints 120</pre>
 
         <div class="editor-shell" id="editorShell">
           <div class="line-numbers" id="lineNumbers" aria-hidden="true">1</div>
-          <div class="code-editor" id="codeEditor" spellcheck="false" ></div>
+          <div class="code-editor" id="codeEditor" spellcheck="false"></div>
         </div>
       </div>
 
-      <!-- VERTICAL RESIZER -->
       <div class="resizer-y" id="resizerY" title="Drag to resize editor and terminal"></div>
 
-      <!-- BOTTOM-RIGHT PANE: Real Terminal -->
       <div class="pane terminal-pane" id="terminalPane">
         <div class="pane-header">
           <div class="pane-title">
@@ -323,8 +352,10 @@ POUR result;   # Prints 120</pre>
         <div class="terminal-shell" id="terminalShell">
           <div class="term-history" id="termHistory"></div>
           <div class="term-input-row">
-            <span class="term-prompt"><span class="term-user">guest@cinebrew</span><span class="term-sep">:</span><span class="term-path">~/sandbox</span><span class="term-sep">$ </span></span>
-            <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" aria-label="Terminal command input">
+            <span class="term-prompt"><span class="term-user">guest@cinebrew</span><span class="term-sep">:</span><span
+                class="term-path">~/sandbox</span><span class="term-sep">$ </span></span>
+            <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false"
+              aria-label="Terminal command input">
           </div>
         </div>
       </div>
@@ -333,8 +364,8 @@ POUR result;   # Prints 120</pre>
 
   </main>
 
-  <!-- Emscripten Generated Wasm Module -->
   <script src="cinebrew.js"></script>
   <script type="module" src="app.js"></script>
 </body>
+
 </html>

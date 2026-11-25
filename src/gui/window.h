@@ -1,20 +1,13 @@
-/**
- * CINEBREW Window Management (CONSOLE BACKEND)
- * Interface for window and rendering (stub: prints debug output only).
- */
-
 #ifndef WINDOW_H
 #define WINDOW_H
 
 #include <string>
 
-// Opaque pointer types to avoid bringing SDL2 headers into this header
 class Window {
 public:
     Window(int width, int height, const std::string& title);
     ~Window();
 
-    // Initialize/Shutdown the backend (stub returns true)
     static bool initialize();
     static void shutdown();
 
@@ -63,5 +56,4 @@ enum KeyCode {
     KEY_LEFT = 80, KEY_UP = 82, KEY_RIGHT = 79, KEY_DOWN = 81
 };
 
-#endif // WINDOW_H
-
+#endif

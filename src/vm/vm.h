@@ -1,8 +1,3 @@
-/**
- * CINEBREW Virtual Machine - Header
- * Stack-based bytecode interpreter interface.
- */
-
 #ifndef VM_H
 #define VM_H
 
@@ -12,7 +7,6 @@
 #include <iostream>
 #include "../runtime/runtime.h"
 
-// Call frame for function calls
 struct Frame {
     int return_pc;
     int prev_stack_size;
@@ -45,5 +39,4 @@ private:
     std::vector<std::string> split(const std::string& s);
 };
 
-#endif // VM_H
-
+#endif
