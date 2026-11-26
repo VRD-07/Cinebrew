@@ -101,7 +101,6 @@ void VM::execute(const std::string& instruction, std::vector<std::string>& progr
             if (next_i < (int)program.size()) {
                 auto next_parts = split(program[next_i]);
                 if (!next_parts.empty() && next_parts[0] == "PRINT") {
-                    std::cerr << "[DEBUG] Literal=('" << literal << "') len=" << literal.size() << std::endl;
                     std::cout << literal << std::endl;
                     pc = next_i + 1;
                     return;
