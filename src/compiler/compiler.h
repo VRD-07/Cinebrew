@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "semantic.h"
+#include "optimizer.h"
 #include "codegen.h"
 #include <string>
 #include <vector>
@@ -13,7 +14,7 @@ class Compiler {
 public:
     Compiler();
 
-    std::vector<std::string> compile(const std::string& source);
+    std::vector<std::string> compile(const std::string& source, bool optimize = true);
     bool hadError() const;
     std::vector<std::string> getErrors() const;
     std::vector<std::string> getBytecode() const;

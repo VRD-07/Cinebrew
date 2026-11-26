@@ -45,6 +45,13 @@ POUR random(100);
 TAKE score = 10;
 score = score + 5;
 POUR score;
+`,
+  optimizer: `# Constant Folding + Identity + Zero Rules
+TAKE a = 10;
+TAKE x = (a + 0) * 1 + (2 * 3);
+TAKE y = a * (4 - 4);
+POUR x;
+POUR y;
 `
 };
 
@@ -71,6 +78,12 @@ const termInput = document.getElementById("termInput");
 const clearTermBtn = document.getElementById("clearTermBtn");
 const exitBadge = document.getElementById("exitBadge");
 const execTimeEl = document.getElementById("execTime");
+const bytecodeShell = document.getElementById("bytecodeShell");
+const bytecodeSummary = document.getElementById("bytecodeSummary");
+const unoptCountEl = document.getElementById("unoptCount");
+const optCountEl = document.getElementById("optCount");
+const unoptBytecodeList = document.getElementById("unoptBytecodeList");
+const optBytecodeList = document.getElementById("optBytecodeList");
 
 let cinebrewModule = null;
 let jar = null;
@@ -308,6 +321,16 @@ document.querySelectorAll(".tab-btn[data-doc]").forEach((btn) => {
   });
 });
 
+document.querySelectorAll(".tab-btn[data-output]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.output;
+    document.querySelectorAll(".tab-btn[data-output]").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".output-panel").forEach((panel) => panel.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(target === "bytecode" ? "bytecodeShell" : "terminalShell").classList.add("active");
+  });
+});
+
 document.querySelectorAll(".load-snippet-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.snippet;
@@ -422,6 +445,38 @@ function classifyOutputLine(line) {
   return "stdout";
 }
 
+function formatBytecode(instructions) {
+  return instructions
+    .map((instr, idx) => `[${String(idx).padStart(2, " ")}] ${instr}`)
+    .join("\n");
+}
+
+function renderBytecodeComparison(unopt, opt) {
+  const before = Array.isArray(unopt) ? unopt : [];
+  const after = Array.isArray(opt) ? opt : [];
+
+  unoptCountEl.textContent = `${before.length}`;
+  optCountEl.textContent = `${after.length}`;
+  unoptBytecodeList.textContent = before.length ? formatBytecode(before) : "(no bytecode)";
+  optBytecodeList.textContent = after.length ? formatBytecode(after) : "(no bytecode)";
+
+  if (before.length === 0) {
+    bytecodeSummary.textContent = "Compilation failed — fix errors to inspect bytecode.";
+    return;
+  }
+
+  const saved = before.length - after.length;
+  const pct = ((saved / before.length) * 100).toFixed(1);
+  if (saved > 0) {
+    bytecodeSummary.innerHTML =
+      `Unoptimized: ${before.length} instructions &rarr; Optimized: ${after.length} instructions ` +
+      `(<strong>-${saved} instructions, -${pct}%</strong>)`;
+  } else {
+    bytecodeSummary.textContent =
+      `Unoptimized: ${before.length} instructions -> Optimized: ${after.length} instructions (no reducible constants/identities)`;
+  }
+}
+
 function runCode() {
   if (!cinebrewModule) return;
 
@@ -434,7 +489,16 @@ function runCode() {
   let hadError = false;
 
   try {
-    const rawOutput = cinebrewModule.runCineBrew(code);
+    let rawOutput = "";
+    if (typeof cinebrewModule.inspectAndRunCineBrew === "function") {
+      const res = cinebrewModule.inspectAndRunCineBrew(code);
+      rawOutput = res.output || "";
+      hadError = Boolean(res.hadError);
+      renderBytecodeComparison(res.unoptimizedBytecode, res.optimizedBytecode);
+    } else {
+      rawOutput = cinebrewModule.runCineBrew(code);
+    }
+
     const elapsed = (performance.now() - t0).toFixed(2);
     execTimeEl.textContent = `${elapsed} ms`;
 
@@ -444,13 +508,18 @@ function runCode() {
       lines.pop();
     }
 
+    const MAX_DISPLAY_LINES = 300;
     if (lines.length === 0) {
       appendTermLine("(no stdout)", "meta");
     } else {
-      for (const line of lines) {
-        const kind = classifyOutputLine(line);
+      const limit = Math.min(lines.length, MAX_DISPLAY_LINES);
+      for (let i = 0; i < limit; i++) {
+        const kind = classifyOutputLine(lines[i]);
         if (kind === "err") hadError = true;
-        appendTermLine(line, kind);
+        appendTermLine(lines[i], kind);
+      }
+      if (lines.length > MAX_DISPLAY_LINES) {
+        appendTermLine(`... [${lines.length - MAX_DISPLAY_LINES} more lines truncated in UI]`, "warn");
       }
     }
 

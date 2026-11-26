@@ -115,6 +115,7 @@ CMakeFiles/test_runtime.dir/tests/test_runtime.cpp.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\backward\auto_ptr.h \
  c:\users\acer\desktop\project\cinebrew-main\src\compiler\semantic.h \
  c:\users\acer\desktop\project\cinebrew-main\src\runtime\runtime.h \
+ c:\users\acer\desktop\project\cinebrew-main\src\compiler\optimizer.h \
  c:\users\acer\desktop\project\cinebrew-main\src\compiler\codegen.h \
  c:\users\acer\desktop\project\cinebrew-main\src\vm\vm.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\iostream \

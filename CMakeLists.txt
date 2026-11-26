@@ -36,6 +36,7 @@ add_library(compiler STATIC
     src/compiler/parser.cpp
     src/compiler/ast.cpp
     src/compiler/semantic.cpp
+    src/compiler/optimizer.cpp
     src/compiler/codegen.cpp
     src/compiler/compiler.cpp
 )

@@ -33,6 +33,7 @@
         <option value="factorial">Preset: Factorial (Recursion)</option>
         <option value="loop">Preset: Loop Counter</option>
         <option value="math">Preset: Built-ins &amp; Math</option>
+        <option value="optimizer">Preset: Optimizer Demo</option>
       </select>
       <button id="resetBtn" class="btn" title="Reset editor to selected preset">Reset</button>
       <button id="runBtn" class="btn btn-run" disabled title="Compile and run (Ctrl+Enter)">
@@ -339,23 +340,46 @@ POUR result;   # Prints 120</pre>
 
       <div class="pane terminal-pane" id="terminalPane">
         <div class="pane-header">
-          <div class="pane-title">
-            <span>Terminal</span>
-            <span id="exitBadge" class="badge-exit">idle</span>
+          <div class="tab-group" role="tablist">
+            <button class="tab-btn active" data-output="terminal" role="tab">Terminal</button>
+            <button class="tab-btn" data-output="bytecode" role="tab">Bytecode</button>
           </div>
           <div class="pane-meta">
+            <span id="exitBadge" class="badge-exit">idle</span>
             <span id="execTime">0.00 ms</span>
             <button id="clearTermBtn" class="btn-ghost">Clear</button>
           </div>
         </div>
 
-        <div class="terminal-shell" id="terminalShell">
+        <div class="terminal-shell output-panel active" id="terminalShell">
           <div class="term-history" id="termHistory"></div>
           <div class="term-input-row">
             <span class="term-prompt"><span class="term-user">guest@cinebrew</span><span class="term-sep">:</span><span
                 class="term-path">~/sandbox</span><span class="term-sep">$ </span></span>
             <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false"
               aria-label="Terminal command input">
+          </div>
+        </div>
+
+        <div class="bytecode-shell output-panel" id="bytecodeShell">
+          <div class="bytecode-summary" id="bytecodeSummary">
+            Run code to compare unoptimized vs optimized AST bytecode.
+          </div>
+          <div class="bytecode-grid">
+            <div class="bytecode-col">
+              <div class="bytecode-col-head">
+                <span>Before Optimization (Raw AST)</span>
+                <span id="unoptCount" class="badge-exit">0</span>
+              </div>
+              <pre class="bytecode-list" id="unoptBytecodeList"></pre>
+            </div>
+            <div class="bytecode-col">
+              <div class="bytecode-col-head">
+                <span>After Optimization (AST Rewrite Pass)</span>
+                <span id="optCount" class="badge-exit">0</span>
+              </div>
+              <pre class="bytecode-list" id="optBytecodeList"></pre>
+            </div>
           </div>
         </div>
       </div>

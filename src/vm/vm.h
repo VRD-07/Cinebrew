@@ -29,13 +29,14 @@ public:
 
     void preprocess(std::vector<std::string>& program);
     void execute(const std::string& instruction, std::vector<std::string>& program);
-    void run(std::vector<std::string> program);
+    void run(std::vector<std::string> program, size_t maxSteps = 0, size_t maxCallDepth = 512);
 
     void printStack() const;
     void printVars() const;
     void reset();
 
 private:
+    size_t maxCallDepth_ = 512;
     std::vector<std::string> split(const std::string& s);
 };
 

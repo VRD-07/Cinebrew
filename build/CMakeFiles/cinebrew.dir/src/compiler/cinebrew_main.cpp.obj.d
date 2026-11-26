@@ -115,6 +115,7 @@ CMakeFiles/cinebrew.dir/src/compiler/cinebrew_main.cpp.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\backward\auto_ptr.h \
  C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\semantic.h \
  c:\users\acer\desktop\project\cinebrew-main\src\runtime\runtime.h \
+ C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\optimizer.h \
  C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\codegen.h \
  c:\users\acer\desktop\project\cinebrew-main\src\vm\vm.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\iostream \

@@ -3,7 +3,7 @@
 
 Compiler::Compiler() : hadError_(false) {}
 
-std::vector<std::string> Compiler::compile(const std::string& source) {
+std::vector<std::string> Compiler::compile(const std::string& source, bool optimize) {
     errors_.clear();
     bytecode_.clear();
     hadError_ = false;
@@ -30,6 +30,11 @@ std::vector<std::string> Compiler::compile(const std::string& source) {
         errors_ = analyzer.getErrors();
         hadError_ = true;
         return bytecode_;
+    }
+
+    if (optimize) {
+        Optimizer optimizer;
+        optimizer.optimize(program);
     }
 
     CodeGenerator codegen;

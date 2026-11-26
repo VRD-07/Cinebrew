@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/codegen.cpp" "CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj.d"
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/compiler.cpp" "CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj.d"
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/lexer.cpp" "CMakeFiles/compiler.dir/src/compiler/lexer.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/lexer.cpp.obj.d"
+  "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/optimizer.cpp" "CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj.d"
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/parser.cpp" "CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj.d"
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/semantic.cpp" "CMakeFiles/compiler.dir/src/compiler/semantic.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/semantic.cpp.obj.d"
   "C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/token.cpp" "CMakeFiles/compiler.dir/src/compiler/token.cpp.obj" "gcc" "CMakeFiles/compiler.dir/src/compiler/token.cpp.obj.d"

@@ -295,6 +295,11 @@ void VM::execute(const std::string& instruction, std::vector<std::string>& progr
             push(result);
             pc++;
         } else {
+            if (callstack.size() >= maxCallDepth_) {
+                std::cerr << "ERROR: Call stack overflow (max depth " << maxCallDepth_ << " exceeded at PC=" << pc << ")" << std::endl;
+                pc = (int)program.size();
+                return;
+            }
             callstack.push_back(frame);
 
             if (labels.find(label) == labels.end()) {
@@ -378,15 +383,23 @@ void VM::execute(const std::string& instruction, std::vector<std::string>& progr
     }
 }
 
-void VM::run(std::vector<std::string> program) {
+void VM::run(std::vector<std::string> program, size_t maxSteps, size_t maxCallDepth) {
     preprocess(program);
 
     pc = 0;
     stack.clear();
     vars.clear();
     callstack.clear();
+    maxCallDepth_ = maxCallDepth;
 
+    size_t steps = 0;
     while (pc < (int)program.size()) {
+        if (maxSteps > 0 && steps >= maxSteps) {
+            std::cerr << "ERROR: Execution limit exceeded (" << maxSteps
+                      << " steps - possible infinite loop)" << std::endl;
+            return;
+        }
+        steps++;
         execute(program[pc], program);
     }
 }

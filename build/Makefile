@@ -404,6 +404,30 @@ src/compiler/lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/src/compiler/lexer.cpp.s
 .PHONY : src/compiler/lexer.cpp.s
 
+src/compiler/optimizer.obj: src/compiler/optimizer.cpp.obj
+.PHONY : src/compiler/optimizer.obj
+
+# target to build an object file
+src/compiler/optimizer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj
+.PHONY : src/compiler/optimizer.cpp.obj
+
+src/compiler/optimizer.i: src/compiler/optimizer.cpp.i
+.PHONY : src/compiler/optimizer.i
+
+# target to preprocess a source file
+src/compiler/optimizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.i
+.PHONY : src/compiler/optimizer.cpp.i
+
+src/compiler/optimizer.s: src/compiler/optimizer.cpp.s
+.PHONY : src/compiler/optimizer.s
+
+# target to generate assembly for a file
+src/compiler/optimizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.s
+.PHONY : src/compiler/optimizer.cpp.s
+
 src/compiler/parser.obj: src/compiler/parser.cpp.obj
 .PHONY : src/compiler/parser.obj
 
@@ -800,6 +824,9 @@ help:
 	@echo ... src/compiler/lexer.obj
 	@echo ... src/compiler/lexer.i
 	@echo ... src/compiler/lexer.s
+	@echo ... src/compiler/optimizer.obj
+	@echo ... src/compiler/optimizer.i
+	@echo ... src/compiler/optimizer.s
 	@echo ... src/compiler/parser.obj
 	@echo ... src/compiler/parser.i
 	@echo ... src/compiler/parser.s

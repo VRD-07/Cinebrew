@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj.d"
   "CMakeFiles/compiler.dir/src/compiler/lexer.cpp.obj"
   "CMakeFiles/compiler.dir/src/compiler/lexer.cpp.obj.d"
+  "CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj"
+  "CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj.d"
   "CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj"
   "CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj.d"
   "CMakeFiles/compiler.dir/src/compiler/semantic.cpp.obj"

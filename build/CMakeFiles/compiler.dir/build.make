@@ -146,11 +146,26 @@ CMakeFiles/compiler.dir/src/compiler/semantic.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/compiler.dir/src/compiler/semantic.cpp.s"
 	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\semantic.cpp -o CMakeFiles\compiler.dir\src\compiler\semantic.cpp.s
 
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj: CMakeFiles/compiler.dir/flags.make
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj: CMakeFiles/compiler.dir/includes_CXX.rsp
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj: C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/optimizer.cpp
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj: CMakeFiles/compiler.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj"
+	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj -MF CMakeFiles\compiler.dir\src\compiler\optimizer.cpp.obj.d -o CMakeFiles\compiler.dir\src\compiler\optimizer.cpp.obj -c C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\optimizer.cpp
+
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.i"
+	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\optimizer.cpp > CMakeFiles\compiler.dir\src\compiler\optimizer.cpp.i
+
+CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.s"
+	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\optimizer.cpp -o CMakeFiles\compiler.dir\src\compiler\optimizer.cpp.s
+
 CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj: CMakeFiles/compiler.dir/flags.make
 CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj: CMakeFiles/compiler.dir/includes_CXX.rsp
 CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj: C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/codegen.cpp
 CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj: CMakeFiles/compiler.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj"
 	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj -MF CMakeFiles\compiler.dir\src\compiler\codegen.cpp.obj.d -o CMakeFiles\compiler.dir\src\compiler\codegen.cpp.obj -c C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\codegen.cpp
 
 CMakeFiles/compiler.dir/src/compiler/codegen.cpp.i: cmake_force
@@ -165,7 +180,7 @@ CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj: CMakeFiles/compiler.dir/f
 CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj: CMakeFiles/compiler.dir/includes_CXX.rsp
 CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj: C:/Users/Acer/Desktop/Project/CineBrew-main/src/compiler/compiler.cpp
 CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj: CMakeFiles/compiler.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj"
 	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj -MF CMakeFiles\compiler.dir\src\compiler\compiler.cpp.obj.d -o CMakeFiles\compiler.dir\src\compiler\compiler.cpp.obj -c C:\Users\Acer\Desktop\Project\CineBrew-main\src\compiler\compiler.cpp
 
 CMakeFiles/compiler.dir/src/compiler/compiler.cpp.i: cmake_force
@@ -183,6 +198,7 @@ compiler_OBJECTS = \
 "CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj" \
 "CMakeFiles/compiler.dir/src/compiler/ast.cpp.obj" \
 "CMakeFiles/compiler.dir/src/compiler/semantic.cpp.obj" \
+"CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj" \
 "CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj" \
 "CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj"
 
@@ -194,11 +210,12 @@ libcompiler.a: CMakeFiles/compiler.dir/src/compiler/token.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/src/compiler/parser.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/src/compiler/ast.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/src/compiler/semantic.cpp.obj
+libcompiler.a: CMakeFiles/compiler.dir/src/compiler/optimizer.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/src/compiler/codegen.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/src/compiler/compiler.cpp.obj
 libcompiler.a: CMakeFiles/compiler.dir/build.make
 libcompiler.a: CMakeFiles/compiler.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libcompiler.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\Acer\Desktop\Project\CineBrew-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libcompiler.a"
 	$(CMAKE_COMMAND) -P CMakeFiles\compiler.dir\cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\compiler.dir\link.txt --verbose=$(VERBOSE)
 
